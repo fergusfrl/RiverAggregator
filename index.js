@@ -9,17 +9,17 @@ app.use(cors());
 
 let port = process.env.PORT || 3030;
 
-// Send to flowagg API
+// Send aggregated data to flowagg API
 function sendDataToAPI(siteData) {
+    let data = {
+        metaData: {
+            dataLength: siteData.length,
+            lastUpdated: new Date()
+        },
+        data: { siteData }
+    };
+
     app.get("/", (req, res) => {
-        let data = {
-            metaData: {
-                dataLength: siteData.length,
-                lastUpdated: new Date()
-            },
-            data: { siteData }
-        };
-        //data.push(siteData);
         res.send(data);
     });
 }
@@ -51,8 +51,6 @@ function makeGetRequest(dataSource) {
                     }
                 };
             });
-
-            // Send data w/ express to create API
             sendDataToAPI(siteData);
         })
         .catch(err => console.log(err));
