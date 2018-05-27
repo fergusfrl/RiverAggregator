@@ -2,40 +2,72 @@ const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
 
+const dataSources = require("./data-sources");
+
 const app = express();
 app.use(cors());
 
 let port = process.env.PORT || 3030;
-let url =
-    "http://data.ecan.govt.nz/data/57/Water/River%20Stage%20flow%20summary%20by%20area/JSON?Sites=NORTH";
 
-// setInterval(() => {
-//     console.log("Flows last checked at " + new Date());
-//     // TODO: put program here so updates occur every _X_ seconds
-// }, 10000); // 1sec == 1000
+// Send to flowagg API
+function sendDataToAPI(siteData) {
+    app.get("/", (req, res) => {
+        let data = {
+            metaData: {
+                dataLength: siteData.length,
+                lastUpdated: new Date()
+            },
+            data: { siteData }
+        };
+        //data.push(siteData);
+        res.send(data);
+    });
+}
+
+// Creates object path given a path string
+function resolve(path, obj) {
+    return path.split(".").reduce((prev, curr) => {
+        return prev ? prev[curr] : null;
+    }, obj || self);
+}
 
 // Get counsil API river data
-axios.get(url).then(response => {
-    var siteData = Array.from(response.data.data.item).map(site => {
-        return {
-            siteName: site.Site_x0020_Name,
-            currentFlow: site.Flow,
-            currentLevel: site.Stage_x0020_Height,
-            lastUpdated: site.Last_x0020_Sample,
-            coordinates: {
-                lat: site.WGS84_Latitude,
-                lng: site.WGS84_Longitude
-            }
-        };
-    });
+function makeGetRequest(dataSource) {
+    axios
+        .get(dataSource.url)
+        .then(response => {
+            var siteData = Array.from(
+                resolve(dataSource.jsonPath, response.data)
+            ).map(site => {
+                return {
+                    siteName: site[dataSource.siteName],
+                    region: dataSource.region,
+                    currentFlow: site[dataSource.currentFlow],
+                    currentLevel: site[dataSource.currentLevel],
+                    lastUpdated: site[dataSource.lastUpdated],
+                    coordinates: {
+                        lat: site[dataSource.lat],
+                        lng: site[dataSource.lng]
+                    }
+                };
+            });
 
-    // TODO: currently used for development - will remove before final deploy
-    console.log(siteData);
+            // Send data w/ express to create API
+            sendDataToAPI(siteData);
+        })
+        .catch(err => console.log(err));
+}
 
-    // Send data w/ express to create API
-    app.get("/", (req, res) => {
-        res.send(siteData);
-    });
+// Call Imediately on start (helpful for development)
+dataSources.forEach(dataSource => {
+    makeGetRequest(dataSource);
 });
+// Call every 30 mins
+setInterval(() => {
+    console.log("Flows last checked at " + new Date());
+    dataSources.forEach(dataSource => {
+        makeGetRequest(dataSource);
+    });
+}, 1800000); // 1sec == 1000
 
 app.listen(port, () => console.log(`Listening on port: ${port}`));
