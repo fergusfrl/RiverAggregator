@@ -24,6 +24,18 @@ let dataSources = [
         lastUpdated: "Last_x0020_Sample",
         lat: "WGS84_Latitude",
         lng: "WGS84_Longitude"
+    },
+    {
+        title: "Otago Regional Counsil",
+        region: "Otago",
+        url: "http://data.orc.govt.nz/v1/sql/TEL_RIVF_SUMMARY/",
+        jsonPath: "value",
+        siteName: "SiteName",
+        currentFlow: "LatestFlow_m3s",
+        currentLevel: "Stage_x0020_Height",
+        lastUpdated: "Date",
+        lat: "GeometrySRID4326.coordinates.1",
+        lng: "GeometrySRID4326.coordinates.0"
     }
 ];
 

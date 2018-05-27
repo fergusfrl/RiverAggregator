@@ -40,14 +40,14 @@ function makeGetRequest(dataSource) {
                 resolve(dataSource.jsonPath, response.data)
             ).map(site => {
                 return {
-                    siteName: site[dataSource.siteName],
+                    siteName: resolve(dataSource.siteName, site),
                     region: dataSource.region,
-                    currentFlow: site[dataSource.currentFlow],
-                    currentLevel: site[dataSource.currentLevel],
-                    lastUpdated: site[dataSource.lastUpdated],
+                    currentFlow: resolve(dataSource.currentFlow, site),
+                    currentLevel: resolve(dataSource.currentLevel, site),
+                    lastUpdated: resolve(dataSource.lastUpdated, site),
                     coordinates: {
-                        lat: site[dataSource.lat],
-                        lng: site[dataSource.lng]
+                        lat: resolve(dataSource.lat, site),
+                        lng: resolve(dataSource.lng, site)
                     }
                 };
             });
@@ -57,9 +57,11 @@ function makeGetRequest(dataSource) {
 }
 
 // Call Imediately on start (helpful for development)
-dataSources.forEach(dataSource => {
-    makeGetRequest(dataSource);
-});
+// dataSources.forEach(dataSource => {
+//     makeGetRequest(dataSource);
+// });
+
+makeGetRequest(dataSources[2]);
 // Call every 30 mins
 setInterval(() => {
     console.log("Flows last checked at " + new Date());
