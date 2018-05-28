@@ -36,6 +36,30 @@ let dataSources = [
         lastUpdated: "Date",
         lat: "GeometrySRID4326.coordinates.1",
         lng: "GeometrySRID4326.coordinates.0"
+    },
+    {
+        title: "Environment Southland (flow meters)",
+        region: "Southland",
+        url: "http://envdata.es.govt.nz/services/data.ashx?f=flow.xml",
+        jsonPath: "sites",
+        siteName: "Site",
+        currentFlow: "Flow.Value",
+        currentLevel: "",
+        lastUpdated: "DataTo",
+        lat: "",
+        lng: ""
+    },
+    {
+        title: "Environment Southland (level meters)",
+        region: "Southland",
+        url: "http://envdata.es.govt.nz/services/data.ashx?f=water-level.xml",
+        jsonPath: "sites",
+        siteName: "Site",
+        currentFlow: "WaterLevel.Value",
+        currentLevel: "",
+        lastUpdated: "DataTo",
+        lat: "",
+        lng: ""
     }
 ];
 

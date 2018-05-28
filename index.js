@@ -31,43 +31,42 @@ function resolve(path, obj) {
     }, obj || self);
 }
 
-// Get counsil API river data
+// Get counsil API gauge data
 function makeGetRequest(dataSource) {
-    axios
-        .get(dataSource.url)
-        .then(response => {
-            var siteData = Array.from(
-                resolve(dataSource.jsonPath, response.data)
-            ).map(site => {
-                return {
-                    siteName: resolve(dataSource.siteName, site),
-                    region: dataSource.region,
-                    currentFlow: resolve(dataSource.currentFlow, site),
-                    currentLevel: resolve(dataSource.currentLevel, site),
-                    lastUpdated: resolve(dataSource.lastUpdated, site),
-                    coordinates: {
-                        lat: resolve(dataSource.lat, site),
-                        lng: resolve(dataSource.lng, site)
-                    }
-                };
-            });
-            sendDataToAPI(siteData);
-        })
-        .catch(err => console.log(err));
+    return axios.get(dataSource.url);
 }
 
-// Call Imediately on start (helpful for development)
-// dataSources.forEach(dataSource => {
-//     makeGetRequest(dataSource);
-// });
-
-makeGetRequest(dataSources[2]);
-// Call every 30 mins
-setInterval(() => {
-    console.log("Flows last checked at " + new Date());
-    dataSources.forEach(dataSource => {
-        makeGetRequest(dataSource);
+axios
+    .all(
+        dataSources.map(dataSource =>
+            makeGetRequest(dataSource)
+                .then(response => {
+                    return Array.from(
+                        resolve(dataSource.jsonPath, response.data)
+                    ).map(site => {
+                        return {
+                            siteName: resolve(dataSource.siteName, site),
+                            region: dataSource.region,
+                            currentFlow: resolve(dataSource.currentFlow, site),
+                            currentLevel: resolve(
+                                dataSource.currentLevel,
+                                site
+                            ),
+                            lastUpdated: resolve(dataSource.lastUpdated, site), // TODO: implement method to add time top date / standardise all date formats
+                            coordinates: {
+                                // TODO: implement method to convert Easting Northing to LatLng
+                                lat: resolve(dataSource.lat, site),
+                                lng: resolve(dataSource.lng, site)
+                            }
+                        };
+                    });
+                })
+                .catch(err => console.log(err))
+        )
+    )
+    .then(data => {
+        var totalData = data.reduce((acc, curr) => acc.concat(curr));
+        sendDataToAPI(totalData);
     });
-}, 1800000); // 1sec == 1000
 
 app.listen(port, () => console.log(`Listening on port: ${port}`));
