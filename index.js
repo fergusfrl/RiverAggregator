@@ -36,37 +36,50 @@ function makeGetRequest(dataSource) {
     return axios.get(dataSource.url);
 }
 
-axios
-    .all(
-        dataSources.map(dataSource =>
-            makeGetRequest(dataSource)
-                .then(response => {
-                    return Array.from(
-                        resolve(dataSource.jsonPath, response.data)
-                    ).map(site => {
-                        return {
-                            siteName: resolve(dataSource.siteName, site),
-                            region: dataSource.region,
-                            currentFlow: resolve(dataSource.currentFlow, site),
-                            currentLevel: resolve(
-                                dataSource.currentLevel,
-                                site
-                            ),
-                            lastUpdated: resolve(dataSource.lastUpdated, site), // TODO: implement method to add time top date / standardise all date formats
-                            coordinates: {
-                                // TODO: implement method to convert Easting Northing to LatLng
-                                lat: resolve(dataSource.lat, site),
-                                lng: resolve(dataSource.lng, site)
-                            }
-                        };
-                    });
-                })
-                .catch(err => console.log(err))
+function mapData() {
+    axios
+        .all(
+            dataSources.map(dataSource =>
+                makeGetRequest(dataSource)
+                    .then(response => {
+                        return Array.from(
+                            resolve(dataSource.jsonPath, response.data)
+                        ).map(site => {
+                            return {
+                                siteName: resolve(dataSource.siteName, site),
+                                region: dataSource.region,
+                                currentFlow: resolve(
+                                    dataSource.currentFlow,
+                                    site
+                                ),
+                                currentLevel: resolve(
+                                    dataSource.currentLevel,
+                                    site
+                                ),
+                                lastUpdated: resolve(
+                                    dataSource.lastUpdated,
+                                    site
+                                ), // TODO: implement method to add time top date / standardise all date formats
+                                coordinates: {
+                                    // TODO: implement method to convert Easting Northing to LatLng
+                                    lat: resolve(dataSource.lat, site),
+                                    lng: resolve(dataSource.lng, site)
+                                }
+                            };
+                        });
+                    })
+                    .catch(err => console.log(err))
+            )
         )
-    )
-    .then(data => {
-        var totalData = data.reduce((acc, curr) => acc.concat(curr));
-        sendDataToAPI(totalData);
-    });
+        .then(data => {
+            var totalData = data.reduce((acc, curr) => acc.concat(curr));
+            sendDataToAPI(totalData);
+        });
+}
+
+mapData();
+setInterval(() => {
+    mapData();
+}, 1800000); // runs every 30 mins
 
 app.listen(port, () => console.log(`Listening on port: ${port}`));
