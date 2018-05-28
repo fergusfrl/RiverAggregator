@@ -26,6 +26,9 @@ function sendDataToAPI(siteData) {
 
 // Creates object path given a path string
 function resolve(path, obj) {
+    if (path === null) {
+        return obj;
+    }
     return path.split(".").reduce((prev, curr) => {
         return prev ? prev[curr] : null;
     }, obj || self);

@@ -60,6 +60,18 @@ let dataSources = [
         lastUpdated: "DataTo",
         lat: "",
         lng: ""
+    },
+    {
+        title: "Marlborough District Counsil",
+        region: "Marlborough",
+        url: "http://hydro.marlborough.govt.nz/reports/riverreport.json",
+        jsonPath: null,
+        siteName: "SiteName",
+        currentFlow: "Flow",
+        currentLevel: "Stage",
+        lastUpdated: "LastUpdate",
+        lat: "",
+        lng: ""
     }
 ];
 
