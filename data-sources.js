@@ -9,6 +9,8 @@ let dataSources = [
         currentFlow: "Flow",
         currentLevel: "Stage_x0020_Height",
         lastUpdated: "Last_x0020_Sample",
+        lastUpdatedTime: "",
+        dateFormat: "",
         lat: "WGS84_Latitude",
         lng: "WGS84_Longitude"
     },
@@ -22,6 +24,8 @@ let dataSources = [
         currentFlow: "Flow",
         currentLevel: "Stage_x0020_Height",
         lastUpdated: "Last_x0020_Sample",
+        lastUpdatedTime: "",
+        dateFormat: "",
         lat: "WGS84_Latitude",
         lng: "WGS84_Longitude"
     },
@@ -34,6 +38,8 @@ let dataSources = [
         currentFlow: "LatestFlow_m3s",
         currentLevel: "Stage_x0020_Height",
         lastUpdated: "Date",
+        lastUpdatedTime: "Time_NZST",
+        dateFormat: "",
         lat: "GeometrySRID4326.coordinates.1",
         lng: "GeometrySRID4326.coordinates.0"
     },
@@ -46,6 +52,8 @@ let dataSources = [
         currentFlow: "Flow.Value",
         currentLevel: "",
         lastUpdated: "DataTo",
+        lastUpdatedTime: "",
+        dateFormat: "DD/MM/YYYY h:mm:ss a",
         lat: "",
         lng: ""
     },
@@ -58,6 +66,8 @@ let dataSources = [
         currentFlow: "WaterLevel.Value",
         currentLevel: "",
         lastUpdated: "DataTo",
+        lastUpdatedTime: "",
+        dateFormat: "DD/MM/YYYY h:mm:ss a",
         lat: "",
         lng: ""
     },
@@ -70,6 +80,8 @@ let dataSources = [
         currentFlow: "Flow",
         currentLevel: "Stage",
         lastUpdated: "LastUpdate",
+        lastUpdatedTime: "",
+        dateFormat: "DD MMM YYYY H:mm",
         lat: "",
         lng: ""
     }

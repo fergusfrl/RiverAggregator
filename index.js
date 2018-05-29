@@ -1,6 +1,7 @@
 const express = require("express");
 const axios = require("axios");
 const cors = require("cors");
+const moment = require("moment");
 
 const dataSources = require("./data-sources");
 
@@ -16,12 +17,23 @@ function sendDataToAPI(siteData) {
             dataLength: siteData.length,
             lastUpdated: new Date()
         },
-        data: { siteData }
+        data: siteData
     };
 
     app.get("/", (req, res) => {
         res.send(data);
     });
+}
+
+// normalizes all dates
+function normalizeDate(dateString, formatString, time) {
+    // formatString may be empty - if so, normal moment.js parsing occurs
+    let date = moment(dateString, formatString);
+    if (time) {
+        // may need to normalize time in the future
+        date.add(moment.duration(time, "HH:mm"));
+    }
+    return date.format("DD/MM/YYYY h:mma");
 }
 
 // Creates object path given a path string
@@ -59,10 +71,11 @@ function mapData() {
                                     dataSource.currentLevel,
                                     site
                                 ),
-                                lastUpdated: resolve(
-                                    dataSource.lastUpdated,
-                                    site
-                                ), // TODO: implement method to add time top date / standardise all date formats
+                                lastUpdated: normalizeDate(
+                                    resolve(dataSource.lastUpdated, site),
+                                    dataSource.dateFormat,
+                                    resolve(dataSource.lastUpdatedTime, site)
+                                ),
                                 coordinates: {
                                     // TODO: implement method to convert Easting Northing to LatLng
                                     lat: resolve(dataSource.lat, site),
