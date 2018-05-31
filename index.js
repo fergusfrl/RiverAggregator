@@ -3,7 +3,7 @@ const axios = require("axios");
 const cors = require("cors");
 const moment = require("moment");
 
-const dataSources = require("./data-sources");
+const dataSources = require("./populate-data-sources");
 
 const app = express();
 app.use(cors());
@@ -48,7 +48,7 @@ function resolve(path, obj) {
 
 // Get counsil API gauge data
 function makeGetRequest(dataSource) {
-    return axios.get(dataSource.url);
+    return axios.get(dataSource.getUrl());
 }
 
 function mapData() {
@@ -58,28 +58,41 @@ function mapData() {
                 makeGetRequest(dataSource)
                     .then(response => {
                         return Array.from(
-                            resolve(dataSource.jsonPath, response.data)
+                            resolve(dataSource.getJsonPath(), response.data)
                         ).map(site => {
+                            // mapping the data here
                             return {
-                                siteName: resolve(dataSource.siteName, site),
-                                region: dataSource.region,
+                                siteName: resolve(
+                                    dataSource.getSiteName(),
+                                    site
+                                ),
+                                region: dataSource.getRegion(),
                                 currentFlow: resolve(
-                                    dataSource.currentFlow,
+                                    dataSource.getCurrentFlow(),
                                     site
                                 ),
                                 currentLevel: resolve(
-                                    dataSource.currentLevel,
+                                    dataSource.getCurrentLevel(),
                                     site
                                 ),
                                 lastUpdated: normalizeDate(
-                                    resolve(dataSource.lastUpdated, site),
-                                    dataSource.dateFormat,
-                                    resolve(dataSource.lastUpdatedTime, site)
+                                    resolve(dataSource.getLastUpdated(), site),
+                                    dataSource.getDateFormat(),
+                                    resolve(
+                                        dataSource.getLastUpdatedTime(),
+                                        site
+                                    )
                                 ),
                                 coordinates: {
                                     // TODO: implement method to convert Easting Northing to LatLng
-                                    lat: resolve(dataSource.lat, site),
-                                    lng: resolve(dataSource.lng, site)
+                                    lat: resolve(
+                                        dataSource.getLatitude(),
+                                        site
+                                    ),
+                                    lng: resolve(
+                                        dataSource.getLongitude(),
+                                        site
+                                    )
                                 }
                             };
                         });
