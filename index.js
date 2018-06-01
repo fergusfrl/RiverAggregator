@@ -26,8 +26,9 @@ function sendDataToAPI(siteData) {
 }
 
 function getCoords(dynamic, lat, lng, site) {
-    if (dynamic) return { lat: resolve(lat, site), lng: resolve(lng, site) };
-    return { lat, lng };
+    return dynamic
+        ? { lat: resolve(lat, site), lng: resolve(lng, site) }
+        : { lat, lng };
 }
 
 // normalizes all dates
