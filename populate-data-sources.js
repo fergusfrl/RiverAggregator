@@ -58,8 +58,8 @@ let dataSources = [
         "DD/MM/YYYY h:mm:ss a",
         "",
         "",
-        "",
-        ""
+        1,
+        2
     ),
     new DataSource(
         "Environment Southland (level meters)",
@@ -73,8 +73,8 @@ let dataSources = [
         "DD/MM/YYYY h:mm:ss a",
         "",
         "",
-        "",
-        ""
+        "Northing",
+        "Easting"
     ),
     new DataSource(
         "Marlborough District Counsil",
@@ -88,8 +88,8 @@ let dataSources = [
         "DD MMM YYYY H:mm",
         "",
         "",
-        "",
-        ""
+        3,
+        4
     )
 ];
 

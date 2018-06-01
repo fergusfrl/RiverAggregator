@@ -25,6 +25,11 @@ function sendDataToAPI(siteData) {
     });
 }
 
+function getCoords(dynamic, lat, lng, site) {
+    if (dynamic) return { lat: resolve(lat, site), lng: resolve(lng, site) };
+    return { lat, lng };
+}
+
 // normalizes all dates
 function normalizeDate(dateString, formatString, time) {
     // formatString may be empty - if so, normal moment.js parsing occurs
@@ -38,17 +43,15 @@ function normalizeDate(dateString, formatString, time) {
 
 // Creates object path given a path string
 function resolve(path, obj) {
-    if (path === null) {
-        return obj;
-    }
-    return path.split(".").reduce((prev, curr) => {
-        return prev ? prev[curr] : null;
-    }, obj || self);
+    if (path === null) return obj;
+    return path
+        .split(".")
+        .reduce((prev, curr) => (prev ? prev[curr] : null), obj || self);
 }
 
 // Get counsil API gauge data
 function makeGetRequest(dataSource) {
-    return axios.get(dataSource.getUrl());
+    return axios.get(dataSource.url);
 }
 
 function mapData() {
@@ -58,42 +61,31 @@ function mapData() {
                 makeGetRequest(dataSource)
                     .then(response => {
                         return Array.from(
-                            resolve(dataSource.getJsonPath(), response.data)
+                            resolve(dataSource.jsonPath, response.data)
                         ).map(site => {
                             // mapping the data here
                             return {
-                                siteName: resolve(
-                                    dataSource.getSiteName(),
-                                    site
-                                ),
-                                region: dataSource.getRegion(),
+                                siteName: resolve(dataSource.siteName, site),
+                                region: dataSource.region,
                                 currentFlow: resolve(
-                                    dataSource.getCurrentFlow(),
+                                    dataSource.currentFlow,
                                     site
                                 ),
                                 currentLevel: resolve(
-                                    dataSource.getCurrentLevel(),
+                                    dataSource.currentLevel,
                                     site
                                 ),
                                 lastUpdated: normalizeDate(
-                                    resolve(dataSource.getLastUpdated(), site),
-                                    dataSource.getDateFormat(),
-                                    resolve(
-                                        dataSource.getLastUpdatedTime(),
-                                        site
-                                    )
+                                    resolve(dataSource.lastUpdated, site),
+                                    dataSource.dateFormat,
+                                    resolve(dataSource.lastUpdatedTime, site)
                                 ),
-                                coordinates: {
-                                    // TODO: implement method to convert Easting Northing to LatLng
-                                    lat: resolve(
-                                        dataSource.getLatitude(),
-                                        site
-                                    ),
-                                    lng: resolve(
-                                        dataSource.getLongitude(),
-                                        site
-                                    )
-                                }
+                                coordinates: getCoords(
+                                    dataSource.hasDynamicCoords(),
+                                    dataSource.latitude,
+                                    dataSource.longitude,
+                                    site
+                                )
                             };
                         });
                     })
