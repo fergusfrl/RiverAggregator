@@ -35,7 +35,7 @@ npm start
 http://localhost:3030
 ```
 
-<details><summary>CLICK ME</summary>
+<details><summary>Example response</summary>
 <p>
 
 ```json
@@ -84,7 +84,7 @@ http://localhost:3030
 http://localhost:3030/<siteName>
 ```
 
-<details><summary>CLICK ME</summary>
+<details><summary>Example response</summary>
 <p>
 
 ```json
