@@ -68,7 +68,7 @@ http://localhost:3030
                 "lng":"173.841934"
             }
         },
-        ...
+        ...,
         ...
     ]
 }
@@ -104,6 +104,34 @@ http://localhost:3030/<siteName>
         },
         "historyUrl": ""
     }
+}
+```
+
+</p>
+</details>
+
+#### Get historical river data by site name
+
+```bash
+# GET
+http://localhost:3030/<siteName>/history
+```
+
+<details><summary>Example response</summary>
+<p>
+
+```json
+// GET
+// http://localhost:3030/Taieri%20at%20Outram
+{
+    "siteName": "Taieri at Outram",
+    "data": [
+        {"time":"19:50","flow":"25.932"},
+        {"time":"19:55","flow":"26.039"},
+        {"time":"20:00","flow":"26.303"},
+        ...,
+        ...
+    ]
 }
 ```
 

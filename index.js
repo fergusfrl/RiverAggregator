@@ -26,7 +26,7 @@ function upDateDataBase(gaugeInfo) {
                 lastUpdated: gaugeInfo.lastUpdated,
                 latitude: gaugeInfo.coordinates.lat,
                 longitude: gaugeInfo.coordinates.lng,
-                historyUrl: ""
+                historyUrl: gaugeInfo.historyUrl
             }
         },
         { upsert: true },
@@ -79,15 +79,15 @@ function resolve(path, obj) {
 }
 
 // Get counsil API gauge data
-function makeGetRequest(dataSource) {
-    return axios.get(dataSource.url);
+function makeGetRequest(url) {
+    return axios.get(url);
 }
 
 function mapData() {
     axios
         .all(
             dataSources.map(dataSource =>
-                makeGetRequest(dataSource)
+                makeGetRequest(dataSource.url)
                     .then(response => {
                         return Array.from(
                             resolve(dataSource.jsonPath, response.data)
@@ -114,6 +114,10 @@ function mapData() {
                                     dataSource.latitude,
                                     dataSource.longitude,
                                     site
+                                ),
+                                historyUrl: dataSource.historyUrl.replace(
+                                    "<siteName>",
+                                    resolve(dataSource.siteName, site)
                                 )
                             };
 
@@ -143,26 +147,45 @@ setInterval(() => {
     mapData();
 }, 1800000); // runs every 30 mins
 
+// get individual river data
 app.get("/:siteName", (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName })
-        .then(gauge =>
+        .then(data =>
             res.send({
                 metaData: { lastUpdated: new Date() },
                 data: {
-                    siteName: gauge.siteName,
-                    region: gauge.region,
-                    currentFlow: gauge.currentFlow,
-                    currentLevel: gauge.currentFlow,
-                    lastUpdate: gauge.lastUpdated,
+                    siteName: data.siteName,
+                    region: data.region,
+                    currentFlow: data.currentFlow,
+                    currentLevel: data.currentFlow,
+                    lastUpdate: data.lastUpdated,
                     coordinates: {
-                        lat: gauge.latitude,
-                        lng: gauge.longitude
+                        lat: data.latitude,
+                        lng: data.longitude
                     },
-                    historyUrl: gauge.historyUrl
+                    historyUrl: data.historyUrl
                 }
             })
         )
         .catch(err => console.log(err));
+});
+
+// get individual river historical data
+// TODO: create dynamic way to retrieve historical flow info
+app.get("/:siteName/history", (req, res) => {
+    Gauge.findOne({ siteName: req.params.siteName }).then(data =>
+        makeGetRequest(data.historyUrl).then(historicalData => {
+            res.send({
+                siteName: req.params.siteName,
+                data: historicalData.data.value.map(instance => {
+                    return {
+                        time: instance.Time_NZST,
+                        flow: instance.ValueAsRecorded_m3s
+                    };
+                })
+            });
+        })
+    );
 });
 
 app.listen(port, () => console.log(`Listening on port: ${port}`));
