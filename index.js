@@ -1,14 +1,42 @@
 const express = require("express");
 const axios = require("axios");
+const mongoose = require("mongoose");
 const cors = require("cors");
 const moment = require("moment");
 
+const Gauge = require("./models/Gauge");
 const dataSources = require("./populate-data-sources");
+
+require("./config/db");
 
 const app = express();
 app.use(cors());
 
 let port = process.env.PORT || 3030;
+
+// Updates / upserts database
+function upDateDataBase(gaugeInfo) {
+    Gauge.findOneAndUpdate(
+        { siteName: gaugeInfo.siteName },
+        {
+            $set: {
+                region: gaugeInfo.region,
+                currentFlow: gaugeInfo.currentFlow,
+                currentLevel: gaugeInfo.currentLevel,
+                lastUpdated: gaugeInfo.lastUpdated,
+                latitude: gaugeInfo.coordinates.lat,
+                longitude: gaugeInfo.coordinates.lng,
+                historyUrl: ""
+            }
+        },
+        { upsert: true },
+        err => {
+            if (err) {
+                console.log(err);
+            }
+        }
+    );
+}
 
 // Send aggregated data to flowagg API
 function sendDataToAPI(siteData) {
@@ -65,7 +93,7 @@ function mapData() {
                             resolve(dataSource.jsonPath, response.data)
                         ).map(site => {
                             // mapping the data here
-                            return {
+                            let gaugeInfo = {
                                 siteName: resolve(dataSource.siteName, site),
                                 region: dataSource.region,
                                 currentFlow: resolve(
@@ -88,20 +116,53 @@ function mapData() {
                                     site
                                 )
                             };
+
+                            upDateDataBase(gaugeInfo);
+
+                            return gaugeInfo;
                         });
                     })
-                    .catch(err => console.log(err))
+                    .catch(err =>
+                        console.log(
+                            `Something is wrong with the "${
+                                dataSource.title
+                            }" data source`
+                        )
+                    )
             )
         )
         .then(data => {
             var totalData = data.reduce((acc, curr) => acc.concat(curr));
             sendDataToAPI(totalData);
-        });
+        })
+        .catch(err => console.log(err));
 }
 
 mapData();
 setInterval(() => {
     mapData();
 }, 1800000); // runs every 30 mins
+
+app.get("/:siteName", (req, res) => {
+    Gauge.findOne({ siteName: req.params.siteName })
+        .then(gauge =>
+            res.send({
+                metaData: { lastUpdated: new Date() },
+                data: {
+                    siteName: gauge.siteName,
+                    region: gauge.region,
+                    currentFlow: gauge.currentFlow,
+                    currentLevel: gauge.currentFlow,
+                    lastUpdate: gauge.lastUpdated,
+                    coordinates: {
+                        lat: gauge.latitude,
+                        lng: gauge.longitude
+                    },
+                    historyUrl: gauge.historyUrl
+                }
+            })
+        )
+        .catch(err => console.log(err));
+});
 
 app.listen(port, () => console.log(`Listening on port: ${port}`));

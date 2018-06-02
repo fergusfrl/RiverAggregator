@@ -1,4 +1,4 @@
-const DataSource = require("./DataSources");
+const DataSource = require("./classes/DataSource");
 
 let dataSources = [
     new DataSource(
