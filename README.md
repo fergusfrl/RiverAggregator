@@ -1,6 +1,6 @@
 # Flow Aggregator
 
-> Restful API which aggregates up to date New Zealnd river data
+> Restful API which surfaces aggregated New Zealand river data from various sources
 
 ## Quick Start
 
@@ -34,3 +34,12 @@ Fergus Farrell
 #### License
 
 This project is licensed under the MIT license
+
+## Data Sources
+
+> All data sources are open source and free. Our thanks and gratitude to the developers and engineers who keep this information available for public use
+
+1.  [Otago Region Counsil](http://water.orc.govt.nz/WaterInfo/Default.aspx)
+2.  [Environment Canterbury](https://www.ecan.govt.nz/data/riverflow/)
+3.  [Environment Southland](http://envdata.es.govt.nz/)
+4.  [Marlborough District Council](http://data.marlborough.govt.nz/floodwatch/)
