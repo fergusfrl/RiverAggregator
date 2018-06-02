@@ -9,6 +9,17 @@
 # Install dependencies
 npm install
 
+# Add Database Config Directory
+mkdir config
+
+# Create db.js file
+vi db.js
+
+# Add following code to db.js
+const mongoose = require("mongoose");
+mongoose.Promise = global.Promise;
+mongoose.connect(<mongodb-uri>));
+
 # Run Flow Aggregator
 npm start
 
@@ -17,10 +28,87 @@ npm start
 
 ## Requests
 
+#### Get all river data
+
 ```bash
 # GET
 http://localhost:3030
 ```
+
+<details><summary>CLICK ME</summary>
+<p>
+
+```json
+// GET
+// http://localhost:3030
+{
+    "metaData":{
+        "dataLength":301,
+        "lastUpdated":"2018-06-02T02:08:56.440Z"
+    },
+    "data": [
+        {
+            "siteName":"Waiau Toa/Clarence Jollies (NIWA)",
+            "region":"Canterbury (North)",
+            "currentFlow":"12.585",
+            "currentLevel":"0.293",
+            "lastUpdated":"02/06/2018 1:00am",
+            "coordinates": {
+                "lat":"-42.45731",
+                "lng":"172.906357"
+            }
+        },
+        {
+            "siteName":"Waiau Toa/Clarence at Clarence Valley Rd Br",
+            "region":"Canterbury (North)",
+            "currentLevel":"0.626",
+            "lastUpdated":"02/06/2018 1:00am",
+            "coordinates": {
+                "lat":"-42.1106262",
+                "lng":"173.841934"
+            }
+        },
+        ...
+        ...
+    ]
+}
+```
+
+</p>
+</details>
+
+#### Get river data by site name
+
+```bash
+# GET
+http://localhost:3030/<siteName>
+```
+
+<details><summary>CLICK ME</summary>
+<p>
+
+```json
+// GET
+// http://localhost:3030/Taieri%20at%20Outram
+{
+    "metaData": { "lastUpdate": "2018-06-02T03:17:13.032Z" },
+    "data": {
+        "siteName": "Taieri at Outram",
+        "region": "Otago",
+        "currentFlow": "25.346",
+        "currentLevel": "25.346",
+        "lastUpdate": "02/06/2018 2:15pm",
+        "coordinates": {
+            "lat": "-45.849812",
+            "lng": "170.242773"
+        },
+        "historyUrl": ""
+    }
+}
+```
+
+</p>
+</details>
 
 ## Data Sources
 
