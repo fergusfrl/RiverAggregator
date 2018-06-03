@@ -18,7 +18,7 @@ vi db.js
 # Add following code to db.js
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect(<mongodb-uri>));
+mongoose.connect(<mongodb-uri>);
 
 # Run Flow Aggregator
 npm start
