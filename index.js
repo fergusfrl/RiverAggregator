@@ -28,7 +28,7 @@ function upDateDataBase(gaugeInfo) {
                 longitude: gaugeInfo.coordinates.lng
             },
             $addToSet: {
-                history: gaugeInfo.history
+                history: gaugeInfo.historyUpdate
             }
         },
         { upsert: true },
@@ -38,21 +38,6 @@ function upDateDataBase(gaugeInfo) {
             }
         }
     );
-}
-
-// Send aggregated data to flowagg API
-function sendDataToAPI(siteData) {
-    let data = {
-        metaData: {
-            dataLength: siteData.length,
-            lastUpdated: new Date()
-        },
-        data: siteData
-    };
-
-    app.get("/", (req, res) => {
-        res.send(data);
-    });
 }
 
 function getCoords(dynamic, lat, lng, site) {
@@ -80,82 +65,63 @@ function resolve(path, obj) {
         .reduce((prev, curr) => (prev ? prev[curr] : null), obj || self);
 }
 
-// Get counsil API gauge data
-function makeGetRequest(url) {
-    return axios.get(url);
-}
-
 function mapData() {
-    axios
-        .all(
-            dataSources.map(dataSource =>
-                makeGetRequest(dataSource.url)
-                    .then(response => {
-                        return Array.from(
-                            resolve(dataSource.jsonPath, response.data)
-                        ).map(site => {
-                            // mapping the data here
-                            let gaugeInfo = {
-                                siteName: resolve(dataSource.siteName, site),
-                                region: dataSource.region,
-                                currentFlow: resolve(
-                                    dataSource.currentFlow,
-                                    site
-                                ),
-                                currentLevel: resolve(
-                                    dataSource.currentLevel,
-                                    site
-                                ),
-                                lastUpdated: normalizeDate(
+    return axios.all(
+        dataSources.map(dataSource =>
+            axios
+                .get(dataSource.url)
+                .then(response => {
+                    return Array.from(
+                        resolve(dataSource.jsonPath, response.data)
+                    ).map(site => {
+                        // mapping the data here
+                        let gaugeInfo = {
+                            siteName: resolve(dataSource.siteName, site),
+                            region: dataSource.region,
+                            currentFlow: resolve(dataSource.currentFlow, site),
+                            currentLevel: resolve(
+                                dataSource.currentLevel,
+                                site
+                            ),
+                            lastUpdated: normalizeDate(
+                                resolve(dataSource.lastUpdated, site),
+                                dataSource.dateFormat,
+                                resolve(dataSource.lastUpdatedTime, site)
+                            ),
+                            coordinates: getCoords(
+                                dataSource.hasDynamicCoords(),
+                                dataSource.latitude,
+                                dataSource.longitude,
+                                site
+                            ),
+                            historyUpdate: {
+                                time: normalizeDate(
                                     resolve(dataSource.lastUpdated, site),
                                     dataSource.dateFormat,
                                     resolve(dataSource.lastUpdatedTime, site)
                                 ),
-                                coordinates: getCoords(
-                                    dataSource.hasDynamicCoords(),
-                                    dataSource.latitude,
-                                    dataSource.longitude,
-                                    site
-                                ),
-                                history: {
-                                    time: normalizeDate(
-                                        resolve(dataSource.lastUpdated, site),
-                                        dataSource.dateFormat,
-                                        resolve(
-                                            dataSource.lastUpdatedTime,
-                                            site
-                                        )
-                                    ),
-                                    flow: resolve(dataSource.currentFlow, site),
-                                    level: resolve(
-                                        dataSource.currentLevel,
-                                        site
-                                    )
-                                }
-                            };
+                                flow: resolve(dataSource.currentFlow, site),
+                                level: resolve(dataSource.currentLevel, site)
+                            }
+                        };
 
-                            upDateDataBase(gaugeInfo);
+                        upDateDataBase(gaugeInfo);
 
-                            return gaugeInfo;
-                        });
-                    })
-                    .catch(err =>
-                        console.log(
-                            `Something went wrong with the "${
-                                dataSource.title
-                            }" data source`
-                        )
+                        return gaugeInfo;
+                    });
+                })
+                .catch(err =>
+                    console.log(
+                        `Something went wrong with the "${
+                            dataSource.title
+                        }" data source`
                     )
-            )
+                )
         )
-        .then(data => {
-            var totalData = data.reduce((acc, curr) => acc.concat(curr));
-            sendDataToAPI(totalData);
-        })
-        .catch(err => console.log(err));
+    );
 }
 
-// get individual river data
+// get current data for an individual site
 app.get("/:siteName", (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName })
         .then(data =>
@@ -195,11 +161,29 @@ app.get("/:siteName/history", (req, res) => {
     });
 });
 
-mapData();
-console.log("Data retrieved at: " + new Date());
+// get all current river data
+app.get("/", (req, res) => {
+    mapData()
+        .then(
+            axios.spread((...response) => {
+                let data = response.reduce((acc, curr) => acc.concat(curr));
+                res.send({
+                    metaData: {
+                        dataLength: data.length,
+                        lastUpdated: new Date()
+                    },
+                    data
+                });
+            })
+        )
+        .catch(err => console.log(err));
+});
+
+// refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
-    mapData();
-    console.log("Data updated at: " + new Date());
-}, 900000); // every 15 minutes (900000) to keep heroku awake
+    axios.get("https://aggflow.herokuapp.com").then(data => {
+        console.log("Data updated at: " + new Date());
+    });
+}, 300000); // every 15 minutes (300000) to poll data sources
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));
