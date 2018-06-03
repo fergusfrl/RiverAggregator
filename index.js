@@ -155,7 +155,7 @@ app.get("/:siteName/history", (req, res) => {
         }
 
         res.send({
-            metData: { siteName: data.siteName, lastUpdated: new Date() },
+            metaData: { siteName: data.siteName, lastUpdated: new Date() },
             data: data.history
         });
     });
@@ -181,9 +181,9 @@ app.get("/", (req, res) => {
 
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
-    axios.get("https://aggflow.herokuapp.com").then(data => {
+    axios.get("http://localhost:3030").then(data => {
         console.log("Data updated at: " + new Date());
     });
 }, 300000); // every 15 minutes (300000) to poll data sources
 
-app.listen(port, () => console.log(`Server started on port: ${port}`));
+app.listen(port, () => console.log(`Server started at: ${port}`));

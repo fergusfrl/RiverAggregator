@@ -28,7 +28,7 @@ npm start
 
 ## Requests
 
-#### Get all river data
+### Get all river data
 
 ```bash
 # GET
@@ -77,7 +77,7 @@ http://localhost:3030
 </p>
 </details>
 
-#### Get river data by site name
+### Get river data by site name
 
 ```bash
 # GET
@@ -110,7 +110,7 @@ http://localhost:3030/<siteName>
 </p>
 </details>
 
-#### Get historical river data by site name
+### Get historical river data by site name
 
 ```bash
 # GET
