@@ -36,7 +36,7 @@ build/Release
 node_modules/
 jspm_packages/
 
-# Configuration directories
+# Config directories
 config/
 
 # TypeScript v1 declaration files
