@@ -1,7 +1,7 @@
 # Flow Aggregator
 
 > Restful API which surfaces aggregated New Zealand river data from various sources.
-> A live end point can be hit at https://aggflow.herokuapp.com/ though this endpoint may not be keep up to date with the latest commit.
+> A live end point can be hit at https://aggflow.herokuapp.com/ though this endpoint may not be keep up to date with the latest changes.
 
 ## Quick Start
 
@@ -122,7 +122,7 @@ http://localhost:3030/<siteName>/history
 
 ```json
 // GET
-// http://localhost:3030/Taieri%20at%20Outram
+// http://localhost:3030/Taieri%20at%20Outram/history
 {
     "metData":{
         "siteName":"Taieri at Outram",
