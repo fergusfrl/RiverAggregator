@@ -25,8 +25,10 @@ function upDateDataBase(gaugeInfo) {
                 currentLevel: gaugeInfo.currentLevel,
                 lastUpdated: gaugeInfo.lastUpdated,
                 latitude: gaugeInfo.coordinates.lat,
-                longitude: gaugeInfo.coordinates.lng,
-                historyUrl: gaugeInfo.historyUrl
+                longitude: gaugeInfo.coordinates.lng
+            },
+            $addToSet: {
+                history: gaugeInfo.history
             }
         },
         { upsert: true },
@@ -115,10 +117,21 @@ function mapData() {
                                     dataSource.longitude,
                                     site
                                 ),
-                                historyUrl: dataSource.historyUrl.replace(
-                                    "<siteName>",
-                                    resolve(dataSource.siteName, site)
-                                )
+                                history: {
+                                    time: normalizeDate(
+                                        resolve(dataSource.lastUpdated, site),
+                                        dataSource.dateFormat,
+                                        resolve(
+                                            dataSource.lastUpdatedTime,
+                                            site
+                                        )
+                                    ),
+                                    flow: resolve(dataSource.currentFlow, site),
+                                    level: resolve(
+                                        dataSource.currentLevel,
+                                        site
+                                    )
+                                }
                             };
 
                             upDateDataBase(gaugeInfo);
@@ -128,7 +141,7 @@ function mapData() {
                     })
                     .catch(err =>
                         console.log(
-                            `Something is wrong with the "${
+                            `Something went wrong with the "${
                                 dataSource.title
                             }" data source`
                         )
@@ -141,11 +154,6 @@ function mapData() {
         })
         .catch(err => console.log(err));
 }
-
-mapData();
-setInterval(() => {
-    mapData();
-}, 1800000); // runs every 30 mins
 
 // get individual river data
 app.get("/:siteName", (req, res) => {
@@ -162,30 +170,36 @@ app.get("/:siteName", (req, res) => {
                     coordinates: {
                         lat: data.latitude,
                         lng: data.longitude
-                    },
-                    historyUrl: data.historyUrl
+                    }
                 }
             })
         )
         .catch(err => console.log(err));
 });
 
-// get individual river historical data
-// TODO: create dynamic way to retrieve historical flow info
+// get historical data for an individual site
 app.get("/:siteName/history", (req, res) => {
-    Gauge.findOne({ siteName: req.params.siteName }).then(data =>
-        makeGetRequest(data.historyUrl).then(historicalData => {
-            res.send({
-                siteName: req.params.siteName,
-                data: historicalData.data.value.map(instance => {
-                    return {
-                        time: instance.Time_NZST,
-                        flow: instance.ValueAsRecorded_m3s
-                    };
-                })
-            });
-        })
-    );
+    Gauge.findOne({ siteName: req.params.siteName }).then(data => {
+        // ensures only 1000 historical entries for each site
+        if (data.history.length > 999) {
+            Gauge.findOneAndUpdate(
+                { siteName: req.params.siteName },
+                { $pop: { history: -1 } }
+            );
+        }
+
+        res.send({
+            metData: { siteName: data.siteName, lastUpdated: new Date() },
+            data: data.history
+        });
+    });
 });
+
+mapData();
+console.log("Data retrieved at: " + new Date());
+setInterval(function() {
+    mapData();
+    console.log("Data updated at: " + new Date());
+}, 900000); // every 15 minutes (900000) to keep heroku awake
 
 app.listen(port, () => console.log(`Server started on port: ${port}`));

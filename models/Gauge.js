@@ -30,9 +30,9 @@ const GaugeSchema = new Schema({
         type: String,
         required: false
     },
-    historyUrl: {
-        type: String,
-        required: false
+    history: {
+        type: Array,
+        default: []
     }
 });
 

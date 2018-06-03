@@ -96,7 +96,7 @@ http://localhost:3030/<siteName>
         "siteName": "Taieri at Outram",
         "region": "Otago",
         "currentFlow": "25.346",
-        "currentLevel": "25.346",
+        "currentLevel": "34.6",
         "lastUpdate": "02/06/2018 2:15pm",
         "coordinates": {
             "lat": "-45.849812",
@@ -124,11 +124,21 @@ http://localhost:3030/<siteName>/history
 // GET
 // http://localhost:3030/Taieri%20at%20Outram
 {
-    "siteName": "Taieri at Outram",
-    "data": [
-        {"time":"19:50","flow":"25.932"},
-        {"time":"19:55","flow":"26.039"},
-        {"time":"20:00","flow":"26.303"},
+    "metData":{
+        "siteName":"Taieri at Outram",
+        "lastUpdated":"03/06/2018 10:00am"
+    },
+    "data":[
+        {
+            "time":"03/06/2018 10:00am",
+            "flow":"25.134",
+            "level": "34.6"
+        },
+        {
+            "time":"03/06/2018 10:30am",
+            "flow":"24.572",
+            "level": "33.8"
+        },
         ...,
         ...
     ]
