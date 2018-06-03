@@ -2,7 +2,7 @@ const express = require("express");
 const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const moment = require("moment");
+const moment = require("moment-timezone");
 
 const Gauge = require("./models/Gauge");
 const dataSources = require("./populate-data-sources");
@@ -49,7 +49,7 @@ function getCoords(dynamic, lat, lng, site) {
 // normalizes all dates
 function normalizeDate(dateString, formatString, time) {
     // formatString may be empty - if so, normal moment.js parsing occurs
-    let date = moment(dateString, formatString);
+    let date = moment(dateString, formatString).tz("Pacific/Auckland");
     if (time) {
         // may need to normalize time in the future
         date.add(moment.duration(time, "HH:mm"));
@@ -144,7 +144,7 @@ app.get("/:siteName", (req, res) => {
 });
 
 // get historical data for an individual site
-app.get("/:siteName/history", (req, res) => {
+app.get(`/:siteName/history`, (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName }).then(data => {
         // ensures only 1000 historical entries for each site
         if (data.history.length > 999) {
@@ -184,6 +184,6 @@ setInterval(function() {
     axios.get("http://localhost:3030").then(data => {
         console.log("Data updated at: " + new Date());
     });
-}, 300000); // every 15 minutes (300000) to poll data sources
+}, 900000); // every 15 minutes (900000) to poll data sources
 
 app.listen(port, () => console.log(`Server started at: ${port}`));
