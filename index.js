@@ -28,7 +28,11 @@ function upDateDataBase(gaugeInfo) {
                 longitude: gaugeInfo.coordinates.lng
             },
             $addToSet: {
-                history: gaugeInfo.historyUpdate
+                history: {
+                    time: gaugeInfo.lastUpdated,
+                    flow: gaugeInfo.currentFlow,
+                    level: gaugeInfo.currentLevel
+                }
             }
         },
         { upsert: true },
@@ -93,16 +97,7 @@ function mapData() {
                                 dataSource.latitude,
                                 dataSource.longitude,
                                 site
-                            ),
-                            historyUpdate: {
-                                time: normalizeDate(
-                                    resolve(dataSource.lastUpdated, site),
-                                    dataSource.dateFormat,
-                                    resolve(dataSource.lastUpdatedTime, site)
-                                ),
-                                flow: resolve(dataSource.currentFlow, site),
-                                level: resolve(dataSource.currentLevel, site)
-                            }
+                            )
                         };
 
                         upDateDataBase(gaugeInfo);
@@ -131,7 +126,7 @@ app.get("/:siteName", (req, res) => {
                     siteName: data.siteName,
                     region: data.region,
                     currentFlow: data.currentFlow,
-                    currentLevel: data.currentFlow,
+                    currentLevel: data.currentLevel,
                     lastUpdate: data.lastUpdated,
                     coordinates: {
                         lat: data.latitude,
