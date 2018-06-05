@@ -12,8 +12,7 @@ class DataSource {
         lastUpdatedTime,
         timeFormat,
         latitude,
-        longitude,
-        historyUrl
+        longitude
     ) {
         this.title = title;
         this.region = region;
@@ -28,7 +27,6 @@ class DataSource {
         this.timeFormat = timeFormat;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.historyUrl = historyUrl;
     }
 
     hasDynamicCoords() {
