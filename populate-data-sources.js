@@ -14,8 +14,7 @@ let dataSources = [
         "",
         "",
         "WGS84_Latitude",
-        "WGS84_Longitude",
-        ""
+        "WGS84_Longitude"
     ),
     new DataSource(
         "Environment Canterbury (SOUTH)",
@@ -30,8 +29,7 @@ let dataSources = [
         "",
         "",
         "WGS84_Latitude",
-        "WGS84_Longitude",
-        ""
+        "WGS84_Longitude"
     ),
     new DataSource(
         "Otago Regional Counsil",
@@ -46,8 +44,7 @@ let dataSources = [
         "Time_NZST",
         "",
         "GeometrySRID4326.coordinates.1",
-        "GeometrySRID4326.coordinates.0",
-        "http://data.orc.govt.nz/v1/sql/TEL_RIVF/?$filter=Site eq '<siteName>'"
+        "GeometrySRID4326.coordinates.0"
     ),
     new DataSource(
         "Environment Southland (flow meters)",
@@ -61,8 +58,7 @@ let dataSources = [
         "DD/MM/YYYY h:mm:ss a",
         "",
         "",
-        1,
-        2,
+        "",
         ""
     ),
     new DataSource(
@@ -77,8 +73,8 @@ let dataSources = [
         "DD/MM/YYYY h:mm:ss a",
         "",
         "",
-        "Northing",
-        "Easting",
+        "",
+        "",
         ""
     ),
     new DataSource(
@@ -93,8 +89,8 @@ let dataSources = [
         "DD MMM YYYY H:mm",
         "",
         "",
-        3,
-        4,
+        "",
+        "",
         ""
     )
 ];
