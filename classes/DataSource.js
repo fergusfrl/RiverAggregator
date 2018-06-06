@@ -8,11 +8,12 @@ class DataSource {
         currentFlow,
         currentLevel,
         lastUpdated,
-        dateFormat,
-        lastUpdatedTime,
-        timeFormat,
         latitude,
-        longitude
+        longitude,
+        dateFormat = "",
+        lastUpdatedTime = "",
+        timeFormat = "",
+        timeZone = "Pacific/Auckland"
     ) {
         this.title = title;
         this.region = region;
@@ -22,11 +23,12 @@ class DataSource {
         this.currentFlow = currentFlow;
         this.currentLevel = currentLevel;
         this.lastUpdated = lastUpdated;
+        this.latitude = latitude;
+        this.longitude = longitude;
         this.dateFormat = dateFormat;
         this.lastUpdatedTime = lastUpdatedTime;
         this.timeFormat = timeFormat;
-        this.latitude = latitude;
-        this.longitude = longitude;
+        this.timeZone = timeZone;
     }
 
     hasDynamicCoords() {

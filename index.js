@@ -48,14 +48,17 @@ function getCoords(dynamic, lat, lng, site) {
         : { lat, lng };
 }
 
-// normalizes all dates
-function normalizeDate(dateString, formatString, time) {
-    // formatString may be empty - if so, normal moment.js parsing occurs
-    let date = moment(dateString, formatString).tz("Pacific/Auckland");
+function standardiseDate(lastUpdated, dateFormat, time, timeFormat, timeZone) {
+    let date = moment(lastUpdated, dateFormat);
+
     if (time) {
-        // may need to normalize time in the future
-        date.add(moment.duration(time, "HH:mm"));
+        date.add(moment.duration(time, timeFormat));
     }
+
+    if (timeZone) {
+        date.tz(timeZone);
+    }
+
     return date.format("DD/MM/YYYY h:mma");
 }
 
@@ -85,10 +88,12 @@ function mapData() {
                                 dataSource.currentLevel,
                                 site
                             ),
-                            lastUpdated: normalizeDate(
+                            lastUpdated: standardiseDate(
                                 resolve(dataSource.lastUpdated, site),
                                 dataSource.dateFormat,
-                                resolve(dataSource.lastUpdatedTime, site)
+                                resolve(dataSource.lastUpdatedTime, site),
+                                dataSource.timeFormat,
+                                dataSource.timeZone
                             ),
                             coordinates: getCoords(
                                 dataSource.hasDynamicCoords(),

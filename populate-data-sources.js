@@ -10,9 +10,6 @@ let dataSources = [
         "Flow",
         "Stage_x0020_Height",
         "Last_x0020_Sample",
-        "",
-        "",
-        "",
         "WGS84_Latitude",
         "WGS84_Longitude"
     ),
@@ -25,9 +22,6 @@ let dataSources = [
         "Flow",
         "Stage_x0020_Height",
         "Last_x0020_Sample",
-        "",
-        "",
-        "",
         "WGS84_Latitude",
         "WGS84_Longitude"
     ),
@@ -40,11 +34,12 @@ let dataSources = [
         "LatestFlow_m3s",
         "Stage_x0020_Height",
         "Date",
+        "GeometrySRID4326.coordinates.1",
+        "GeometrySRID4326.coordinates.0",
         "",
         "Time_NZST",
-        "",
-        "GeometrySRID4326.coordinates.1",
-        "GeometrySRID4326.coordinates.0"
+        "HH:mm",
+        ""
     ),
     new DataSource(
         "Environment Southland (flow meters)",
@@ -55,11 +50,9 @@ let dataSources = [
         "Flow.Value",
         "",
         "DataTo",
-        "DD/MM/YYYY h:mm:ss a",
         "",
         "",
-        "",
-        ""
+        "DD/MM/YYYY h:mm:ss a"
     ),
     new DataSource(
         "Environment Southland (level meters)",
@@ -70,12 +63,9 @@ let dataSources = [
         "",
         "WaterLevel.Value",
         "DataTo",
-        "DD/MM/YYYY h:mm:ss a",
         "",
         "",
-        "",
-        "",
-        ""
+        "DD/MM/YYYY h:mm:ss a"
     ),
     new DataSource(
         "Marlborough District Counsil",
@@ -86,12 +76,9 @@ let dataSources = [
         "Flow",
         "Stage",
         "LastUpdate",
-        "DD MMM YYYY H:mm",
         "",
         "",
-        "",
-        "",
-        ""
+        "DD MMM YYYY H:mm"
     )
 ];
 
