@@ -13,7 +13,7 @@ const app = express();
 app.use(cors());
 
 // Updates / upserts database
-function upDateDataBase(gaugeInfo) {
+function updateDataBase(gaugeInfo) {
     let updateObject = {
         region: gaugeInfo.region,
         ...gaugeInfo.currentFlow && {currentFlow: gaugeInfo.currentFlow},
