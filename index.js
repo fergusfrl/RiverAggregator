@@ -14,23 +14,27 @@ app.use(cors());
 
 // Updates / upserts database
 function upDateDataBase(gaugeInfo) {
+    let updateObject = {
+        region: gaugeInfo.region,
+        ...gaugeInfo.currentFlow && {currentFlow: gaugeInfo.currentFlow},
+        ...gaugeInfo.currentLevel && {currentLevel: gaugeInfo.currentLevel},
+        lastUpdated: gaugeInfo.lastUpdated,
+        latitude: gaugeInfo.coordinates.lat,
+        longitude: gaugeInfo.coordinates.lng
+    }
+    
+    let historyObject = {
+        time: gaugeInfo.lastUpdated,
+        ...gaugeInfo.currentFlow && {flow: gaugeInfo.currentFlow},
+        ...gaugeInfo.currentLevel && {level: gaugeInfo.currentLevel}
+    }
+    
     Gauge.findOneAndUpdate(
         { siteName: gaugeInfo.siteName },
         {
-            $set: {
-                region: gaugeInfo.region,
-                currentFlow: gaugeInfo.currentFlow,
-                currentLevel: gaugeInfo.currentLevel,
-                lastUpdated: gaugeInfo.lastUpdated,
-                latitude: gaugeInfo.coordinates.lat,
-                longitude: gaugeInfo.coordinates.lng
-            },
+            $set: updateObject,
             $addToSet: {
-                history: {
-                    time: gaugeInfo.lastUpdated,
-                    flow: gaugeInfo.currentFlow,
-                    level: gaugeInfo.currentLevel
-                }
+                history: historyObject
             }
         },
         { upsert: true },
