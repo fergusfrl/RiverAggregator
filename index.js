@@ -12,8 +12,6 @@ require("./config/db");
 const app = express();
 app.use(cors());
 
-let port = process.env.PORT || 3030;
-
 // Updates / upserts database
 function upDateDataBase(gaugeInfo) {
     Gauge.findOneAndUpdate(
@@ -105,13 +103,7 @@ function mapData() {
                         return gaugeInfo;
                     });
                 })
-                .catch(err =>
-                    console.log(
-                        `Something went wrong with the "${
-                            dataSource.title
-                        }" data source`
-                    )
-                )
+                .catch(err => console.log(err))
         )
     );
 }
@@ -140,20 +132,22 @@ app.get("/:siteName", (req, res) => {
 
 // get historical data for an individual site
 app.get(`/:siteName/history`, (req, res) => {
-    Gauge.findOne({ siteName: req.params.siteName }).then(data => {
-        // ensures only 1000 historical entries for each site
-        if (data.history.length > 999) {
-            Gauge.findOneAndUpdate(
-                { siteName: req.params.siteName },
-                { $pop: { history: -1 } }
-            );
-        }
+    Gauge.findOne({ siteName: req.params.siteName })
+        .then(data => {
+            // ensures only 1000 historical entries for each site
+            if (data.history.length > 999) {
+                Gauge.findOneAndUpdate(
+                    { siteName: req.params.siteName },
+                    { $pop: { history: -1 } }
+                );
+            }
 
-        res.send({
-            metaData: { siteName: data.siteName, lastUpdated: new Date() },
-            data: data.history
-        });
-    });
+            res.send({
+                metaData: { siteName: data.siteName, lastUpdated: new Date() },
+                data: data.history
+            });
+        })
+        .catch(err => console.log(err));
 });
 
 // get all current river data
@@ -174,11 +168,17 @@ app.get("/", (req, res) => {
         .catch(err => console.log(err));
 });
 
+let port = process.env.PORT || 3030;
+let hostname = process.env.HOST || "localhost";
+
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
-    axios.get("http://localhost:3030").then(data => {
-        console.log("Data updated at: " + new Date());
-    });
+    axios
+        .get(`${hostname}:${port}`)
+        .then(data => {
+            console.log("Data updated at: " + new Date());
+        })
+        .catch(err => console.log(err));
 }, 900000); // every 15 minutes (900000) to poll data sources
 
 app.listen(port, () => console.log(`Server started at: ${port}`));
