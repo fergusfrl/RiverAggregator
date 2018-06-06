@@ -101,8 +101,7 @@ http://localhost:3030/<siteName>
         "coordinates": {
             "lat": "-45.849812",
             "lng": "170.242773"
-        },
-        "historyUrl": ""
+        }
     }
 }
 ```
