@@ -3,6 +3,7 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const moment = require("moment-timezone");
+const os = require('os');
 
 const Gauge = require("./models/Gauge");
 const dataSources = require("./populate-data-sources");
@@ -178,7 +179,7 @@ app.get("/", (req, res) => {
 });
 
 let port = process.env.PORT || 3030;
-let hostname = process.env.HOST || "localhost";
+let hostname = os.hostname().includes("local") ? "localhost" : "http://aggflow.herokuapp.com";
 
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
@@ -190,4 +191,4 @@ setInterval(function() {
         .catch(err => console.log(err));
 }, 900000); // every 15 minutes (900000) to poll data sources
 
-app.listen(port, () => console.log(`Server started at: ${port}`));
+app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
