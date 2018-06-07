@@ -125,7 +125,7 @@ http://localhost:3030/<siteName>/history
 {
     "metData":{
         "siteName":"Taieri at Outram",
-        "lastUpdated":"03/06/2018 10:00am"
+        "lastUpdated":"03/06/2018 1:00pm"
     },
     "data":[
         {
