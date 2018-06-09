@@ -79,6 +79,18 @@ let dataSources = [
         "",
         "",
         "DD MMM YYYY H:mm"
+    ),
+    new DataSource(
+        "Taranaki Regional Counsil",
+        "Taranaki",
+        "https://www.trc.govt.nz/environment/maps-and-data/regional-overview//MapMarkers/?measureID=7",
+        null,
+        "title",
+        "measure",
+        "",
+        "description",
+        "lat",
+        "lng"
     )
 ];
 

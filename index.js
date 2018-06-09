@@ -3,7 +3,7 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const moment = require("moment-timezone");
-const os = require('os');
+const os = require("os");
 
 const Gauge = require("./models/Gauge");
 const dataSources = require("./populate-data-sources");
@@ -17,21 +17,23 @@ app.use(cors());
 function updateDataBase(gaugeInfo) {
     let updateObject = {
         region: gaugeInfo.region,
-        ...gaugeInfo.currentFlow && {currentFlow: gaugeInfo.currentFlow},
-        ...gaugeInfo.currentLevel && {currentLevel: gaugeInfo.currentLevel},
+        ...(gaugeInfo.currentFlow && { currentFlow: gaugeInfo.currentFlow }),
+        ...(gaugeInfo.currentLevel && { currentLevel: gaugeInfo.currentLevel }),
         lastUpdated: gaugeInfo.lastUpdated,
         latitude: gaugeInfo.coordinates.lat,
         longitude: gaugeInfo.coordinates.lng
-    }
-    
+    };
+
     let historyObject = {
         time: gaugeInfo.lastUpdated,
-        ...gaugeInfo.currentFlow && {flow: gaugeInfo.currentFlow},
-        ...gaugeInfo.currentLevel && {level: gaugeInfo.currentLevel}
-    }
-    
+        data: {
+            ...(gaugeInfo.currentFlow && { flow: gaugeInfo.currentFlow }),
+            ...(gaugeInfo.currentLevel && { level: gaugeInfo.currentLevel })
+        }
+    };
+
     Gauge.findOneAndUpdate(
-        { siteName: gaugeInfo.siteName },
+        { siteName: gaugeInfo.siteName.toLowerCase() },
         {
             $set: updateObject,
             $addToSet: {
@@ -54,7 +56,15 @@ function getCoords(dynamic, lat, lng, site) {
 }
 
 function standardiseDate(lastUpdated, dateFormat, time, timeFormat, timeZone) {
-    let date = moment(lastUpdated, dateFormat);
+    let date;
+    if (lastUpdated.charAt(0) !== "<") {
+        date = moment(lastUpdated, dateFormat);
+    } else {
+        // allow for Taranakis format
+        date = moment().startOf("day");
+        time = lastUpdated.match(/([0-9]|0[0-9]|1[0-9]|2[0-3]):[0-5][0-9]/g);
+        timeFormat = "HH:mma";
+    }
 
     if (time) {
         date.add(moment.duration(time, timeFormat));
@@ -108,7 +118,7 @@ function mapData() {
                             )
                         };
 
-                        upDateDataBase(gaugeInfo);
+                        updateDataBase(gaugeInfo);
 
                         return gaugeInfo;
                     });
@@ -120,7 +130,7 @@ function mapData() {
 
 // get current data for an individual site
 app.get("/:siteName", (req, res) => {
-    Gauge.findOne({ siteName: req.params.siteName })
+    Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data =>
             res.send({
                 metaData: { lastUpdated: new Date() },
@@ -142,7 +152,7 @@ app.get("/:siteName", (req, res) => {
 
 // get historical data for an individual site
 app.get(`/:siteName/history`, (req, res) => {
-    Gauge.findOne({ siteName: req.params.siteName })
+    Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data => {
             // ensures only 1000 historical entries for each site
             if (data.history.length > 999) {
@@ -179,7 +189,9 @@ app.get("/", (req, res) => {
 });
 
 let port = process.env.PORT || 3030;
-let hostname = os.hostname().includes("local") ? "localhost" : "http://aggflow.herokuapp.com";
+let hostname = os.hostname().includes("Laptop")
+    ? "localhost"
+    : "http://aggflow.herokuapp.com";
 
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
