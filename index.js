@@ -202,9 +202,10 @@ app.get("/", (req, res) => {
 });
 
 let port = process.env.PORT || 3030;
-let hostname = os.hostname().includes("Laptop")
-    ? "localhost"
-    : "http://aggflow.herokuapp.com";
+let hostname =
+    process.env.NODE && ~process.env.NODE.indexOf("heroku")
+        ? "https://aggflow.herokuapp.com"
+        : "localhost";
 
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
