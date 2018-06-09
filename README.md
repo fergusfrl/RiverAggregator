@@ -44,7 +44,7 @@ http://localhost:3030
 {
     "metaData":{
         "dataLength":301,
-        "lastUpdated":"2018-06-02T02:08:56.440Z"
+        "lastUpdated":"02/06/2018 1:46am"
     },
     "data": [
         {
@@ -91,7 +91,7 @@ http://localhost:3030/<siteName>
 // GET
 // http://localhost:3030/Taieri%20at%20Outram
 {
-    "metaData": { "lastUpdate": "2018-06-02T03:17:13.032Z" },
+    "metaData": { "lastUpdate": "02/06/2018 3:00pm" },
     "data": {
         "siteName": "Taieri at Outram",
         "region": "Otago",

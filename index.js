@@ -76,7 +76,7 @@ function standardiseDate(lastUpdated, dateFormat, time, timeFormat, timeZone) {
         date.tz(timeZone);
     }
 
-    return date.format("DD/MM/YYYY h:mma");
+    return date.format(TIME_FORMAT);
 }
 
 // Creates object path given a path string
@@ -138,7 +138,7 @@ app.get("/:siteName", (req, res) => {
                 metaData: {
                     lastUpdated: moment()
                         .tz("Pacific/Auckland")
-                        .format("DD/MM/YYYY h:mma")
+                        .format(TIME_FORMAT)
                 },
                 data: {
                     siteName: data.siteName,
@@ -173,7 +173,7 @@ app.get(`/:siteName/history`, (req, res) => {
                     siteName: data.siteName,
                     lastUpdated: moment()
                         .tz("Pacific/Auckland")
-                        .format("DD/MM/YYYY h:mma")
+                        .format(TIME_FORMAT)
                 },
                 data: data.history
             });
@@ -192,7 +192,7 @@ app.get("/", (req, res) => {
                         dataLength: data.length,
                         lastUpdated: moment()
                             .tz("Pacific/Auckland")
-                            .format("DD/MM/YYYY h:mma")
+                            .format(TIME_FORMAT)
                     },
                     data
                 });
@@ -215,7 +215,7 @@ setInterval(function() {
                 "Data updated at: " +
                     moment()
                         .tz("Pacific/Auckland")
-                        .format("DD/MM/YYYY h:mma")
+                        .format(TIME_FORMAT)
             );
         })
         .catch(err => console.log(err));
