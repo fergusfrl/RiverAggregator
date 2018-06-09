@@ -13,6 +13,8 @@ require("./config/db");
 const app = express();
 app.use(cors());
 
+const TIME_FORMAT = "DD/MM/YYYY h:mma";
+
 // Updates / upserts database
 function updateDataBase(gaugeInfo) {
     let updateObject = {
@@ -133,7 +135,11 @@ app.get("/:siteName", (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data =>
             res.send({
-                metaData: { lastUpdated: new Date() },
+                metaData: {
+                    lastUpdated: moment()
+                        .tz("Pacific/Auckland")
+                        .format("DD/MM/YYYY h:mma")
+                },
                 data: {
                     siteName: data.siteName,
                     region: data.region,
@@ -163,7 +169,12 @@ app.get(`/:siteName/history`, (req, res) => {
             }
 
             res.send({
-                metaData: { siteName: data.siteName, lastUpdated: new Date() },
+                metaData: {
+                    siteName: data.siteName,
+                    lastUpdated: moment()
+                        .tz("Pacific/Auckland")
+                        .format("DD/MM/YYYY h:mma")
+                },
                 data: data.history
             });
         })
@@ -179,7 +190,9 @@ app.get("/", (req, res) => {
                 res.send({
                     metaData: {
                         dataLength: data.length,
-                        lastUpdated: new Date()
+                        lastUpdated: moment()
+                            .tz("Pacific/Auckland")
+                            .format("DD/MM/YYYY h:mma")
                     },
                     data
                 });
@@ -198,7 +211,12 @@ setInterval(function() {
     axios
         .get(`${hostname}:${port}`)
         .then(data => {
-            console.log("Data updated at: " + new Date());
+            console.log(
+                "Data updated at: " +
+                    moment()
+                        .tz("Pacific/Auckland")
+                        .format("DD/MM/YYYY h:mma")
+            );
         })
         .catch(err => console.log(err));
 }, 900000); // every 15 minutes (900000) to poll data sources
