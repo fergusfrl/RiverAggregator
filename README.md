@@ -151,10 +151,11 @@ http://localhost:3030/<siteName>/history
 
 > All data sources are open source and free. Our thanks and gratitude to the developers and engineers who keep this information available for public use
 
-1.  [Otago Region Counsil](http://water.orc.govt.nz/WaterInfo/Default.aspx)
+1.  [Otago Region Council](http://water.orc.govt.nz/WaterInfo/Default.aspx)
 2.  [Environment Canterbury](https://www.ecan.govt.nz/data/riverflow/)
 3.  [Environment Southland](http://envdata.es.govt.nz/)
 4.  [Marlborough District Council](http://data.marlborough.govt.nz/floodwatch/)
+5.  [Taranaki Regional Council](https://www.trc.govt.nz/environment/maps-and-data/regional-overview/?measureID=7)
 
 ## App Info
 
