@@ -210,7 +210,7 @@ let hostname =
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
     axios
-        .get(`${hostname}:${port}`)
+        .get(hostname)
         .then(data => {
             console.log(
                 "Data updated at: " +
