@@ -52,7 +52,10 @@ let dataSources = [
         "DataTo",
         "",
         "",
-        "DD/MM/YYYY h:mm:ss a"
+        "DD/MM/YYYY h:mm:ss a",
+        "",
+        "",
+        ""
     ),
     new DataSource(
         "Environment Southland (level meters)",
@@ -65,7 +68,10 @@ let dataSources = [
         "DataTo",
         "",
         "",
-        "DD/MM/YYYY h:mm:ss a"
+        "DD/MM/YYYY h:mm:ss a",
+        "",
+        "",
+        ""
     ),
     new DataSource(
         "Marlborough District Counsil",
@@ -78,7 +84,10 @@ let dataSources = [
         "LastUpdate",
         "",
         "",
-        "DD MMM YYYY H:mm"
+        "DD MMM YYYY H:mm",
+        "",
+        "",
+        ""
     ),
     new DataSource(
         "Taranaki Regional Counsil",
@@ -90,7 +99,11 @@ let dataSources = [
         "",
         "description",
         "lat",
-        "lng"
+        "lng",
+        "",
+        "",
+        "",
+        ""
     )
 ];
 
