@@ -13,7 +13,7 @@ npm install
 mkdir config
 
 # Create db.js file
-vi db.js
+touch db.js
 
 # Add following code to db.js
 const mongoose = require("mongoose");
