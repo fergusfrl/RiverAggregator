@@ -223,3 +223,5 @@ setInterval(function() {
 }, 900000); // every 15 minutes (900000) to poll data sources
 
 app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
+
+module.exports = app; // export required for testing
