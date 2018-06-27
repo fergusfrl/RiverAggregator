@@ -19,15 +19,14 @@ describe('River List', () => {
     });
 });
 
-describe('RIndividual River', () => {
+describe('Individual River', () => {
     it('it should GET single rivers Information', done => {
         chai.request(server)
-            .get('/')
+            .get('/taieri at outram')
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
-                res.body.metaData.dataLength.should.be.above(0);
-                res.body.metaData.dataLength.should.be.eql(res.body.data.length);
+                res.body.data.siteName.should.be.eql("taieri at outram");
                 done();
         });
     });
