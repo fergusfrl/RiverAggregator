@@ -19,14 +19,30 @@ describe('River List', () => {
     });
 });
 
-describe('Individual River', () => {
-    it('it should GET single rivers Information', done => {
+describe('Individual River Data', () => {
+    it('it should GET single rivers information', done => {
         chai.request(server)
             .get('/taieri at outram')
             .end((err, res) => {
                 res.should.have.status(200);
                 res.body.should.be.a('object');
                 res.body.data.siteName.should.be.eql("taieri at outram");
+                done();
+        });
+    });
+});
+
+describe('Historic Individual River Data', () => {
+    it('it should GET single rivers historic information', done => {
+        chai.request(server)
+            .get('/taieri at outram/history')
+            .end((err, res) => {
+                res.should.have.status(200);
+                res.body.should.be.a('object');
+                res.body.metaData.siteName.should.be.eql("taieri at outram");
+                res.body.data.should.be.a('array');
+                res.body.data.length.should.be.above(0);
+                res.body.data.length.should.be.below(1001);
                 done();
         });
     });
