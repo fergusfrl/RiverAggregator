@@ -54,7 +54,6 @@ let dataSources = [
         "",
         "DD/MM/YYYY h:mm:ss a",
         "",
-        "",
         ""
     ),
     new DataSource(
@@ -69,7 +68,6 @@ let dataSources = [
         "",
         "",
         "DD/MM/YYYY h:mm:ss a",
-        "",
         "",
         ""
     ),
@@ -86,7 +84,6 @@ let dataSources = [
         "",
         "DD MMM YYYY H:mm",
         "",
-        "",
         ""
     ),
     new DataSource(
@@ -100,7 +97,6 @@ let dataSources = [
         "description",
         "lat",
         "lng",
-        "",
         "",
         "",
         ""
