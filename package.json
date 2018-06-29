@@ -4,7 +4,7 @@
     "description": "Aggregation of NZ river flows and levels",
     "main": "index.js",
     "scripts": {
-        "test": "mocha --timeout 10000 --exit",
+        "test": "mocha --timeout 15000 --exit",
         "dev": "nodemon index.js",
         "start": "node index.js"
     },

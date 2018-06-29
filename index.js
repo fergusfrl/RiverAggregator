@@ -14,6 +14,7 @@ const app = express();
 app.use(cors());
 
 const TIME_FORMAT = "DD/MM/YYYY h:mma";
+const TIME_ZONE = "Pacific/Auckland";
 
 // Updates / upserts database
 function updateDataBase(gaugeInfo) {
@@ -137,7 +138,7 @@ app.get("/:siteName", (req, res) => {
             res.send({
                 metaData: {
                     lastUpdated: moment()
-                        .tz("Pacific/Auckland")
+                        .tz(TIME_ZONE)
                         .format(TIME_FORMAT)
                 },
                 data: {
@@ -172,7 +173,7 @@ app.get(`/:siteName/history`, (req, res) => {
                 metaData: {
                     siteName: data.siteName,
                     lastUpdated: moment()
-                        .tz("Pacific/Auckland")
+                        .tz(TIME_ZONE)
                         .format(TIME_FORMAT)
                 },
                 data: data.history
@@ -191,7 +192,7 @@ app.get("/", (req, res) => {
                     metaData: {
                         dataLength: data.length,
                         lastUpdated: moment()
-                            .tz("Pacific/Auckland")
+                            .tz(TIME_ZONE)
                             .format(TIME_FORMAT)
                     },
                     data
@@ -215,7 +216,7 @@ setInterval(function() {
             console.log(
                 "Data updated at: " +
                     moment()
-                        .tz("Pacific/Auckland")
+                        .tz(TIME_ZONE)
                         .format(TIME_FORMAT)
             );
         })
@@ -224,4 +225,4 @@ setInterval(function() {
 
 app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
 
-module.exports = app; // export required for testing
+module.exports = {app, standardiseDate}; // export required for testing
