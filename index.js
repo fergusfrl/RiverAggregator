@@ -3,7 +3,6 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const moment = require("moment-timezone");
-const os = require("os");
 
 const Gauge = require("./models/Gauge");
 const dataSources = require("./populate-data-sources");
@@ -34,13 +33,11 @@ function updateDataBase(gaugeInfo) {
         }
     };
 
+    // update all values - only required on first run... may change to just flow & time
     Gauge.findOneAndUpdate(
         { siteName: gaugeInfo.siteName.toLowerCase() },
         {
-            $set: updateObject,
-            $addToSet: {
-                history: historyObject
-            }
+            $set: updateObject
         },
         { upsert: true },
         err => {
@@ -48,6 +45,24 @@ function updateDataBase(gaugeInfo) {
                 console.log(err);
             }
         }
+    );
+
+    // add to history array if new time value
+    Gauge.update(
+        {
+            siteName: gaugeInfo.siteName.toLowerCase(),
+            "history.time": { $ne: gaugeInfo.lastUpdated }
+        },
+        { $push: { histroy: historyObject } }
+    );
+
+    // update history if same time value and different data values
+    Gauge.update(
+        {
+            siteName: gaugeInfo.siteName.toLowerCase(),
+            "history.time": gaugeInfo.lastUpdated
+        },
+        { $set: { "history.$.data": historyObject.data } }
     );
 }
 
