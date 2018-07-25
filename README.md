@@ -13,12 +13,12 @@ npm install
 mkdir config
 
 # Create db.js file
-vi db.js
+touch db.js
 
 # Add following code to db.js
 const mongoose = require("mongoose");
 mongoose.Promise = global.Promise;
-mongoose.connect(<mongodb-uri>);
+mongoose.connect(<mongodb-uri>).catch(err => console.log(err));
 
 # Run Flow Aggregator
 npm start
