@@ -36,4 +36,5 @@ jobs:
       # run tests!
       - run: npm test
       
-      - deploy: push heroku master
+      - deploy: 
+            command: push heroku master
