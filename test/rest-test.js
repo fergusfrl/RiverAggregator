@@ -1,24 +1,27 @@
-let chai = require('chai');
-let chaiHttp = require('chai-http');
-let server = require('../index').app;
+let chai = require("chai");
+let chaiHttp = require("chai-http");
+let server = require("../index").app;
 let should = chai.should();
 
 chai.use(chaiHttp);
 
-describe('River List', () => {
-    it('it should GET a list of Rivers', done => {
+describe("River List", () => {
+    it("it should GET a list of Rivers", done => {
         chai.request(server)
-            .get('/')
+            .get("/")
             .end((err, res) => {
                 res.should.have.status(200);
-                res.body.should.be.a('object');
+                res.body.should.be.a("object");
                 res.body.metaData.dataLength.should.be.above(0);
-                res.body.metaData.dataLength.should.be.eql(res.body.data.length);
+                res.body.metaData.dataLength.should.be.eql(
+                    res.body.data.length
+                );
                 done();
-        });
+            });
     });
 });
 
+/*
 describe('Individual River Data', () => {
     it('it should GET single rivers information', done => {
         chai.request(server)
@@ -47,3 +50,4 @@ describe('Historic Individual River Data', () => {
         });
     });
 });
+*/
