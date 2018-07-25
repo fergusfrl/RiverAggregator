@@ -35,9 +35,5 @@ jobs:
         
       # run tests!
       - run: npm test
-
-deployment:
-  staging:
-    branch: master
-    heroku:
-      appname: aggflow
+      
+      - deploy: push heroku master
