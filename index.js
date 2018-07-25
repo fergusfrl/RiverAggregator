@@ -19,8 +19,8 @@ const TIME_ZONE = "Pacific/Auckland";
 function updateDataBase(gaugeInfo) {
     let updateObject = {
         region: gaugeInfo.region,
-        ...(gaugeInfo.currentFlow && { currentFlow: gaugeInfo.currentFlow }),
-        ...(gaugeInfo.currentLevel && { currentLevel: gaugeInfo.currentLevel }),
+        currentFlow: gaugeInfo.currentFlow,
+        currentLevel: gaugeInfo.currentLevel,
         lastUpdated: gaugeInfo.lastUpdated,
         latitude: gaugeInfo.coordinates.lat,
         longitude: gaugeInfo.coordinates.lng
@@ -240,4 +240,4 @@ setInterval(function() {
 
 app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
 
-module.exports = {app, standardiseDate}; // export required for testing
+module.exports = { app, standardiseDate }; // export required for testing
