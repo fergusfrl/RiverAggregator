@@ -49,6 +49,8 @@ jobs:
       - run: npm test
   
   deploy:
+    docker:
+      - image: buildpack-deps:trusty
     steps:
       - checkout
       - run:
