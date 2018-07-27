@@ -236,7 +236,7 @@ setInterval(function() {
             );
         })
         .catch(err => console.log(err));
-}, 900000); // every 15 minutes (900000) to poll data sources
+}, 900000); // every 15 minutes (900000)
 
 app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
 
