@@ -42,7 +42,7 @@ jobs:
       - run:
         name: Deploy Master to Heroku
         command: |
-            git push https://heroku:b5432fbc-c392-409f-be13-ae31239eaa84@git.heroku.com/aggflow.git master
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 workflows:
   version: 2
