@@ -35,6 +35,23 @@ jobs:
         
       # run tests!
       - run: npm test
-      
-      - deploy: 
-            command: push heroku master
+  
+  deploy:
+    steps:
+      - checkout
+      - run:
+        name: Deploy Master to Heroku
+        command: |
+            git push https://heroku:b5432fbc-c392-409f-be13-ae31239eaa84@git.heroku.com/aggflow.git master
+
+workflows:
+  version: 2
+  build-deploy:
+    jobs:
+      - build
+      - deploy:
+        requires:
+          -build
+        filters:
+          branches:
+            only: master
