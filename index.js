@@ -19,8 +19,8 @@ const TIME_ZONE = "Pacific/Auckland";
 function updateDataBase(gaugeInfo) {
     let updateObject = {
         region: gaugeInfo.region,
-        currentFlow: gaugeInfo.currentFlow,
-        currentLevel: gaugeInfo.currentLevel,
+        ...(gaugeInfo.currentFlow && { currentFlow: gaugeInfo.currentFlow }),
+        ...(gaugeInfo.currentLevel && { currentLevel: gaugeInfo.currentLevel }),
         lastUpdated: gaugeInfo.lastUpdated,
         latitude: gaugeInfo.coordinates.lat,
         longitude: gaugeInfo.coordinates.lng
@@ -176,8 +176,8 @@ app.get("/:siteName", (req, res) => {
 app.get(`/:siteName/history`, (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data => {
-            // ensures only 1000 historical entries for each site
-            if (data.history.length > 999) {
+            // ensures only 500 historical entries for each site
+            if (data.history.length > 499) {
                 Gauge.findOneAndUpdate(
                     { siteName: req.params.siteName },
                     { $pop: { history: -1 } }
