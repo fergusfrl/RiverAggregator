@@ -176,14 +176,6 @@ app.get("/:siteName", (req, res) => {
 app.get(`/:siteName/history`, (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data => {
-            // ensures only 500 historical entries for each site
-            if (data.history.length > 499) {
-                Gauge.findOneAndUpdate(
-                    { siteName: req.params.siteName },
-                    { $pop: { history: -1 } }
-                );
-            }
-
             res.send({
                 metaData: {
                     siteName: data.siteName,
