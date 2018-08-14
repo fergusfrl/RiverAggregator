@@ -47,6 +47,14 @@ function updateDataBase(gaugeInfo) {
             }
         }
     );
+    
+    Gauge.update(
+        { 
+            siteName: gaugeInfo.siteName.toLowerCase(), 
+            history: { $size: 500 } 
+        }, 
+        { $pop: { history: -1 } }
+    );
 
     // add to history array if new time value
     Gauge.update(
