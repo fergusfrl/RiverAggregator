@@ -34,11 +34,10 @@ function updateDataBase(gaugeInfo) {
         }
     };
 
-    // update all values - only required on first run... may change to just flow & time
     Gauge.findOneAndUpdate(
-        { siteName: gaugeInfo.siteName.toLowerCase() },
+        { siteName: gaugeInfo.siteName.toLowerCase(), history: { $size: 500 }  },
         {
-            $set: updateObject
+            $pop: { history: -1 }
         },
         { upsert: true },
         err => {
@@ -48,31 +47,23 @@ function updateDataBase(gaugeInfo) {
         }
     );
     
-    Gauge.update(
-        { 
-            siteName: gaugeInfo.siteName.toLowerCase(), 
-            history: { $size: 500 } 
-        }, 
-        { $pop: { history: -1 } }
+    // update all values - only required on first run... may change to just flow & time
+    Gauge.findOneAndUpdate(
+        { siteName: gaugeInfo.siteName.toLowerCase() },
+        {
+            $set: updateObject,
+            $addToSet: {
+                 history: historyObject
+             }
+        },
+        { upsert: true },
+        err => {
+            if (err) {
+                console.log(err);
+            }
+        }
     );
 
-    // add to history array if new time value
-    Gauge.update(
-        {
-            siteName: gaugeInfo.siteName.toLowerCase(),
-            "history.time": { $ne: gaugeInfo.lastUpdated }
-        },
-        { $push: { histroy: historyObject } }
-    );
-
-    // update history if same time value and different data values
-    Gauge.update(
-        {
-            siteName: gaugeInfo.siteName.toLowerCase(),
-            "history.time": gaugeInfo.lastUpdated
-        },
-        { $set: { "history.$.data": historyObject.data } }
-    );
 }
 
 function getCoords(dynamic, lat, lng, site) {
