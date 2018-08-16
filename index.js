@@ -29,8 +29,8 @@ function updateDataBase(gaugeInfo) {
     let historyObject = {
         time: gaugeInfo.lastUpdated,
         data: {
-            flow: gaugeInfo.currentFlow,
-            level: gaugeInfo.currentLevel
+            ...(gaugeInfo.currentFlow && { currentFlow: gaugeInfo.currentFlow }),
+            ...(gaugeInfo.currentLevel && { currentLevel: gaugeInfo.currentLevel })
         }
     };
 
