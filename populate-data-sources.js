@@ -1,4 +1,7 @@
+require("dotenv").config();
+
 const DataSource = require("./classes/DataSource");
+const scrapingServer = process.env.SCRAPER_SERVER;
 
 let dataSources = [
     new DataSource(
@@ -100,6 +103,32 @@ let dataSources = [
         "",
         "",
         ""
+    ),
+    new DataSource(
+        "Tasman District Council",
+        "Tasman",
+        `${scrapingServer}/tasman`,
+        null,
+        "siteName",
+        "currentFlow",
+        "currentLevel",
+        "lastUpdate",
+        "",
+        "",
+        "DD/MM/YYYY H:mm"
+    ),
+    new DataSource(
+        "West Coast Regional Council",
+        "West Coast",
+        `${scrapingServer}/westcoast`,
+        null,
+        "siteName",
+        "currentFlow",
+        "currentLevel",
+        "lastUpdate",
+        "",
+        "",
+        "DD/MM/YYYY H:mm"
     )
 ];
 
