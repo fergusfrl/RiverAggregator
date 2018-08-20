@@ -29,32 +29,35 @@ function updateDataBase(gaugeInfo) {
     let historyObject = {
         time: gaugeInfo.lastUpdated,
         data: {
-            ...(gaugeInfo.currentFlow && { currentFlow: gaugeInfo.currentFlow }),
-            ...(gaugeInfo.currentLevel && { currentLevel: gaugeInfo.currentLevel })
+            ...(gaugeInfo.currentFlow && {
+                currentFlow: gaugeInfo.currentFlow
+            }),
+            ...(gaugeInfo.currentLevel && {
+                currentLevel: gaugeInfo.currentLevel
+            })
         }
     };
 
     Gauge.findOneAndUpdate(
-        { siteName: gaugeInfo.siteName.toLowerCase(), history: { $size: 500 }  },
+        { siteName: gaugeInfo.siteName.toLowerCase(), history: { $size: 500 } },
         {
             $pop: { history: -1 }
         },
-        { upsert: true },
         err => {
             if (err) {
                 console.log(err);
             }
         }
     );
-    
+
     // update all values - only required on first run... may change to just flow & time
     Gauge.findOneAndUpdate(
         { siteName: gaugeInfo.siteName.toLowerCase() },
         {
             $set: updateObject,
             $addToSet: {
-                 history: historyObject
-             }
+                history: historyObject
+            }
         },
         { upsert: true },
         err => {
@@ -63,7 +66,6 @@ function updateDataBase(gaugeInfo) {
             }
         }
     );
-
 }
 
 function getCoords(dynamic, lat, lng, site) {
@@ -190,21 +192,30 @@ app.get(`/:siteName/history`, (req, res) => {
 
 // get all current river data
 app.get("/", (req, res) => {
-    mapData()
-        .then(
-            axios.spread((...response) => {
-                let data = response.reduce((acc, curr) => acc.concat(curr));
-                res.send({
-                    metaData: {
-                        dataLength: data.length,
-                        lastUpdated: moment()
-                            .tz(TIME_ZONE)
-                            .format(TIME_FORMAT)
-                    },
-                    data
-                });
-            })
-        )
+    Gauge.find({})
+        .then(data => {
+            res.send({
+                metaData: {
+                    dataLength: data.length
+                },
+                data: data.map(gauge => {
+                    const {
+                        siteName,
+                        lastUpdated,
+                        currentFlow,
+                        currentLevel,
+                        region
+                    } = gauge;
+                    return {
+                        siteName,
+                        lastUpdated,
+                        currentFlow,
+                        currentLevel,
+                        region
+                    };
+                })
+            });
+        })
         .catch(err => console.log(err));
 });
 
@@ -216,18 +227,10 @@ let hostname =
 
 // refresh data every 15 mins to add to history and to keep heroku awake
 setInterval(function() {
-    axios
-        .get(hostname)
-        .then(data => {
-            console.log(
-                "Data updated at: " +
-                    moment()
-                        .tz(TIME_ZONE)
-                        .format(TIME_FORMAT)
-            );
-        })
-        .catch(err => console.log(err));
+    mapData().catch(err => console.log(err));
 }, 900000); // every 15 minutes (900000) pools APIs
+
+mapData();
 
 app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
 
