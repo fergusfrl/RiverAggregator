@@ -29,16 +29,32 @@ function updateDataBase(gaugeInfo) {
     let historyObject = {
         time: gaugeInfo.lastUpdated,
         data: {
-            flow: gaugeInfo.currentFlow,
-            level: gaugeInfo.currentLevel
+            ...(gaugeInfo.currentFlow && { currentFlow: gaugeInfo.currentFlow }),
+            ...(gaugeInfo.currentLevel && { currentLevel: gaugeInfo.currentLevel })
         }
     };
 
+    Gauge.findOneAndUpdate(
+        { siteName: gaugeInfo.siteName.toLowerCase(), history: { $size: 500 }  },
+        {
+            $pop: { history: -1 }
+        },
+        { upsert: true },
+        err => {
+            if (err) {
+                console.log(err);
+            }
+        }
+    );
+    
     // update all values - only required on first run... may change to just flow & time
     Gauge.findOneAndUpdate(
         { siteName: gaugeInfo.siteName.toLowerCase() },
         {
-            $set: updateObject
+            $set: updateObject,
+            $addToSet: {
+                 history: historyObject
+             }
         },
         { upsert: true },
         err => {
@@ -48,23 +64,6 @@ function updateDataBase(gaugeInfo) {
         }
     );
 
-    // add to history array if new time value
-    Gauge.update(
-        {
-            siteName: gaugeInfo.siteName.toLowerCase(),
-            "history.time": { $ne: gaugeInfo.lastUpdated }
-        },
-        { $push: { histroy: historyObject } }
-    );
-
-    // update history if same time value and different data values
-    Gauge.update(
-        {
-            siteName: gaugeInfo.siteName.toLowerCase(),
-            "history.time": gaugeInfo.lastUpdated
-        },
-        { $set: { "history.$.data": historyObject.data } }
-    );
 }
 
 function getCoords(dynamic, lat, lng, site) {
@@ -176,14 +175,6 @@ app.get("/:siteName", (req, res) => {
 app.get(`/:siteName/history`, (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data => {
-            // ensures only 500 historical entries for each site
-            if (data.history.length > 499) {
-                Gauge.findOneAndUpdate(
-                    { siteName: req.params.siteName },
-                    { $pop: { history: -1 } }
-                );
-            }
-
             res.send({
                 metaData: {
                     siteName: data.siteName,
