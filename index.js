@@ -3,9 +3,11 @@ const axios = require("axios");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const moment = require("moment-timezone");
+const expressGraphQL = require("express-graphql");
 
 const Gauge = require("./models/Gauge");
 const dataSources = require("./populate-data-sources");
+const schema = require("./schema.js");
 
 require("./config/db");
 
@@ -231,6 +233,14 @@ setInterval(function() {
 }, 900000); // every 15 minutes (900000) pools APIs
 
 mapData();
+
+app.use(
+    "/graphql",
+    expressGraphQL({
+        schema: schema,
+        graphiql: true
+    })
+);
 
 app.listen(port, () => console.log(`Server started at: ${hostname}:${port}`));
 
