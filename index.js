@@ -150,8 +150,8 @@ function mapData() {
 }
 
 // get current data for an individual site
-app.get("/:siteName(^(?!graphql).*$)", (req, res) => {
-    Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
+app.get("/^(?!graphql).*$/", (req, res) => {
+    Gauge.findOne({ siteName: req.params[0].toLowerCase() })
         .then(data =>
             res.send({
                 metaData: {
