@@ -103,33 +103,33 @@ let dataSources = [
         "",
         "",
         ""
+    ),
+    new DataSource(
+        "Tasman District Council",
+        "Tasman",
+        `${scrapingServer}/tasman`,
+        null,
+        "siteName",
+        "currentFlow",
+        "currentLevel",
+        "lastUpdate",
+        "",
+        "",
+        "DD/MM/YYYY H:mm"
+    ),
+    new DataSource(
+        "West Coast Regional Council",
+        "West Coast",
+        `${scrapingServer}/westcoast`,
+        null,
+        "siteName",
+        "currentFlow",
+        "currentLevel",
+        "lastUpdate",
+        "",
+        "",
+        "DD/MM/YYYY H:mm"
     )
-    // new DataSource(
-    //     "Tasman District Council",
-    //     "Tasman",
-    //     `${scrapingServer}/tasman`,
-    //     null,
-    //     "siteName",
-    //     "currentFlow",
-    //     "currentLevel",
-    //     "lastUpdate",
-    //     "",
-    //     "",
-    //     "DD/MM/YYYY H:mm"
-    // ),
-    // new DataSource(
-    //     "West Coast Regional Council",
-    //     "West Coast",
-    //     `${scrapingServer}/westcoast`,
-    //     null,
-    //     "siteName",
-    //     "currentFlow",
-    //     "currentLevel",
-    //     "lastUpdate",
-    //     "",
-    //     "",
-    //     "DD/MM/YYYY H:mm"
-    // )
 ];
 
 module.exports = dataSources;
