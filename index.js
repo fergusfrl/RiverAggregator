@@ -150,7 +150,7 @@ function mapData() {
 }
 
 // get current data for an individual site
-app.get("/:siteName(^(?!graphql).*([\$]))", (req, res) => {
+app.get("/:siteName(^(?!graphql).*([$]))", (req, res) => {
     Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
         .then(data =>
             res.send({
@@ -228,9 +228,9 @@ let hostname =
         : "localhost";
 
 // refresh data every 15 mins to add to history and to keep heroku awake
-setInterval(function() {
+setInterval(() => {
     mapData().catch(err => console.log(err));
-    axios.get(`${hostname}:${port}`, (req, res) => console.log('Keeping Heroku awake'))
+    axios.get(hostname).then(data => console.log("Kepping Heroku awake"));
 }, 900000); // every 15 minutes (900000) pools APIs
 
 mapData();
