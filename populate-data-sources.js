@@ -129,6 +129,20 @@ let dataSources = [
         "",
         "",
         "DD/MM/YYYY H:mm"
+    ),
+    ,
+    new DataSource(
+        "Otago Regional Council",
+        "Otago",
+        `${scrapingServer}/kawarau`,
+        null,
+        "siteName",
+        "currentFlow",
+        "currentLevel",
+        "lastUpdate",
+        "",
+        "",
+        "DD/MM/YY H:mm:ss"
     )
 ];
 
