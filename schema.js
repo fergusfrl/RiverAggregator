@@ -61,6 +61,17 @@ const RootQuery = new GraphQLObjectType({
                     .catch(err => console.log(err));
             }
         },
+        regionalGauges: {
+            type: new GraphQLList(GaugeType),
+            args: {
+                region: { type: GraphQLString }
+            },
+            resolve: async (parentValue, args) => {
+                return await Gauge.find({ region: args.region })
+                    .then(gauge => gauge)
+                    .catch(err => console.log(err));
+            }
+        },
         singleGauge: {
             type: GaugeType,
             args: {

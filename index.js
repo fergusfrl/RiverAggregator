@@ -150,30 +150,30 @@ function mapData() {
 }
 
 // get current data for an individual site
-app.get("/:siteName", (req, res) => {
-    Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
-        .then(data =>
-            res.send({
-                metaData: {
-                    lastUpdated: moment()
-                        .tz(TIME_ZONE)
-                        .format(TIME_FORMAT)
-                },
-                data: {
-                    siteName: data.siteName,
-                    region: data.region,
-                    currentFlow: data.currentFlow,
-                    currentLevel: data.currentLevel,
-                    lastUpdate: data.lastUpdated,
-                    coordinates: {
-                        lat: data.latitude,
-                        lng: data.longitude
-                    }
-                }
-            })
-        )
-        .catch(err => console.log(err));
-});
+// app.get("/:siteName", (req, res) => {
+//     Gauge.findOne({ siteName: req.params.siteName.toLowerCase() })
+//         .then(data =>
+//             res.send({
+//                 metaData: {
+//                     lastUpdated: moment()
+//                         .tz(TIME_ZONE)
+//                         .format(TIME_FORMAT)
+//                 },
+//                 data: {
+//                     siteName: data.siteName,
+//                     region: data.region,
+//                     currentFlow: data.currentFlow,
+//                     currentLevel: data.currentLevel,
+//                     lastUpdate: data.lastUpdated,
+//                     coordinates: {
+//                         lat: data.latitude,
+//                         lng: data.longitude
+//                     }
+//                 }
+//             })
+//         )
+//         .catch(err => console.log(err));
+// });
 
 // get historical data for an individual site
 app.get(`/:siteName/history`, (req, res) => {
