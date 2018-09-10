@@ -2,17 +2,15 @@ const Gauge = require("./models/Gauge");
 const {
     GraphQLObjectType,
     GraphQLString,
-    GraphQLInt,
     GraphQLSchema,
-    GraphQLList,
-    GraphQLNonNull
+    GraphQLList
 } = require("graphql");
 
 const InfoType = new GraphQLObjectType({
     name: "Info",
     fields: () => ({
-        flow: { type: GraphQLString },
-        level: { type: GraphQLString }
+        currentFlow: { type: GraphQLString },
+        currentLevel: { type: GraphQLString }
     })
 });
 
@@ -32,14 +30,7 @@ const GaugeType = new GraphQLObjectType({
         currentFlow: { type: GraphQLString },
         currentLevel: { type: GraphQLString },
         region: { type: GraphQLString },
-        history: { type: GraphQLList(HistoryType)
-//             resolve: (parent, args) => {
-//                 return Gauge
-//                     .findOne({ siteName: parent.siteName })
-//                     .then(gauge => gauge.history)
-//                     .catch(err => console.log(err));
-//             }
-        }
+        history: { type: GraphQLList(HistoryType) }
     })
 });
 
