@@ -20,7 +20,7 @@ const HistoryType = new GraphQLObjectType({
     name: "History",
     fields: () => ({
         time: { type: GraphQLString },
-        data: { type: new GraphQLList(InfoType) }
+        data: { type: InfoType }
     })
 });
 
@@ -32,7 +32,14 @@ const GaugeType = new GraphQLObjectType({
         currentFlow: { type: GraphQLString },
         currentLevel: { type: GraphQLString },
         region: { type: GraphQLString },
-        history: { type: HistoryType }
+        history: { type: GraphQLList(HistoryType)
+//             resolve: (parent, args) => {
+//                 return Gauge
+//                     .findOne({ siteName: parent.siteName })
+//                     .then(gauge => gauge.history)
+//                     .catch(err => console.log(err));
+//             }
+        }
     })
 });
 
