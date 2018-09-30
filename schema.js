@@ -40,46 +40,42 @@ const RootQuery = new GraphQLObjectType({
     fields: {
         allGauges: {
             type: new GraphQLList(GaugeType),
-            resolve: async () => {
-                return await Gauge.find({})
+            resolve: (parentValue, args) =>
+                Gauge.find({})
                     .then(gauge => gauge)
-                    .catch(err => console.log(err));
-            }
+                    .catch(err => console.log(err))
         },
         someGauges: {
             type: new GraphQLList(GaugeType),
             args: {
                 siteNames: { type: new GraphQLList(GraphQLString) }
             },
-            resolve: async (parentValue, args) => {
-                return await Gauge.find({
+            resolve: (parentValue, args) =>
+                Gauge.find({
                     siteName: { $in: args.siteNames }
                 })
                     .then(gauge => gauge)
-                    .catch(err => console.log(err));
-            }
+                    .catch(err => console.log(err))
         },
         regionalGauges: {
             type: new GraphQLList(GaugeType),
             args: {
                 region: { type: GraphQLString }
             },
-            resolve: async (parentValue, args) => {
-                return await Gauge.find({ region: args.region })
+            resolve: (parentValue, args) =>
+                Gauge.find({ region: args.region })
                     .then(gauge => gauge)
-                    .catch(err => console.log(err));
-            }
+                    .catch(err => console.log(err))
         },
         singleGauge: {
             type: GaugeType,
             args: {
                 siteName: { type: GraphQLString }
             },
-            resolve: async (parentValue, args) => {
-                return await Gauge.findOne({ siteName: args.siteName })
+            resolve: (parentValue, args) =>
+                Gauge.findOne({ siteName: args.siteName })
                     .then(gauge => gauge)
-                    .catch(err => console.log(err));
-            }
+                    .catch(err => console.log(err))
         }
     }
 });
