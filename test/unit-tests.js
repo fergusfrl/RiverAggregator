@@ -23,7 +23,7 @@ describe("Standardised Dates", () => {
         var date = moment().format("DD/MM/YYYY");
         index
             .standardiseDate("<html>7:46am</html>", "", null, null, null)
-            .should.be.eql(date + " 8:46am");
+            .should.be.eql(date + " 7:46am");
         done();
     });
 });
