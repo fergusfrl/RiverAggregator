@@ -130,7 +130,6 @@ let dataSources = [
         "",
         "DD/MM/YYYY H:mm"
     ),
-    ,
     new DataSource(
         "Otago Regional Council",
         "Otago",
@@ -143,6 +142,19 @@ let dataSources = [
         "",
         "",
         "DD/MM/YY H:mm:ss"
+    ),
+    new DataSource(
+        "Hawkes Bay Regional Council",
+        "Hawkes Bay",
+        "https://hbmaps.hbrc.govt.nz/arcgis/rest/services/WebMaps/Environmental1/MapServer/7/query?where=1%3D1&outFields=NZTM_Easting,NZTM_Northing,Hilltop_Site,Hydrotel_CurrentValue,Hydrotel_Units,Hydrotel_LastSampleTimeText&outSR=4326&f=json",
+        "features",
+        "attributes.Hilltop_Site",
+        "attributes.Hydrotel_CurrentValue",
+        "",
+        "attributes.Hydrotel_LastSampleTimeText",
+        "attributes.NZTM_Easting",
+        "attributes.NZTM_Northing",
+        "DD/MM/YYYY H:mm"
     )
 ];
 
